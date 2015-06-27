@@ -12,7 +12,7 @@ function generate_dynamic_link($html,$name,$hash){
   $link=$_SERVER['PHP_SELF'].'?id='.$targetPageid;
   $classAttribute='';
 
-  if(!file_exists('.data/page.'.$targetPageid.'.htm')){
+  if(!file_exists('.lwiki/data/page.'.$targetPageid.'.htm')){
     $classAttribute=' class="lwiki-missing-link"';
     $link.='&mode=edit';
   }else if($hash!==false)

@@ -69,6 +69,57 @@ function command.convert {
   convert "$@"
 }
 
+
+function command.init {
+  local base=$(cd -P $LWIKIPATH; echo -n $PWD)
+
+  if [[ -d .data && -d .lock && -d res && -h index.php && -h .lib ]]; then
+    echo "lwiki-init: Updating old type lwiki directory..."
+    mkdir .lwiki
+    mv .data .lwiki/data
+    mv .lock .lwiki/lock
+    mv .lib .lwiki/lib
+    echo "lwiki-init: done"
+    return 0
+  fi
+
+  if [[ -d .lwiki ]]; then
+    echo "lwiki-init: The subdirectory \`.lwiki' already exists!" >&2
+    echo "lwiki-init: This directory may be already a lwiki directory." >&2
+    echo "lwiki-init: Failed to initialize the lwiki directory." >&2
+    return 1
+  fi
+
+  if [[ -e index.php || -e res ]]; then
+    echo "lwiki-init: The file index.php or res already exists!" >&2
+    echo "lwiki-init: Failed to initialize the lwiki directory." >&2
+    return 1
+  fi
+
+  mkdir -p .lwiki/data .lwiki/lock
+  ln -s "$base/res" res
+  ln -s "$base/lib" .lwiki/lib
+  ln -s "$base/index.php" index.php
+
+  echo "lwiki-init: changing owner group of .lwiki/data and .lwiki/lock to \`apache'..."
+  chmod 775 .lwiki/data .lwiki/lock
+  sudo chown :apache .lwiki/data .lwiki/lock
+  echo "lwiki-init: done"
+}
+
+function command.archive {
+  if [[ ! -d .lwiki ]]; then
+    echo "lwiki-save: this is not a lwiki directory." >&2
+    return 1
+  fi
+
+  (
+    cd .lwiki/data
+    tar caf ../../"${1:-data}".$(date +%Y%m%d).tar.xz *
+  )
+}
+
+
 if [[ ! $1 ]]; then
   echo "lwiki: operation not specified" >&2
   exit 1

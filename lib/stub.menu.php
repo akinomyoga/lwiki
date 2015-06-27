@@ -36,7 +36,7 @@ EOF;
 
 sidebar_begin_holder('目次',true);
 function load_menu_content(){
-  $fname_menu='.data/page.Menu.htm';
+  $fname_menu='.lwiki/data/page.Menu.htm';
   $content_exists=file_exists($fname_menu);
   if($content_exists){
     include $fname_menu;

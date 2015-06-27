@@ -79,13 +79,13 @@ $lwiki_base_resourceDirectoryUrl=preg_replace('/index\.php$/','res',$_SERVER['PH
 
 $page_title=$_GET['id'];
 if($page_title==''){
-  $page_title=@file_get_contents(".data/main");
+  $page_title=@file_get_contents(".lwiki/data/main");
   if($page_title===false||$page_title=='')
     $page_title='Main Page';
 }
 $ht_page_title=htmlspecialchars($page_title);
 $pageid=urlencode($page_title);
-$pageinfo=@file('.data/page.'.$pageid.'.info');
+$pageinfo=@file('.lwiki/data/page.'.$pageid.'.info');
 function page_modified_date(){
   global $pageid,$pageinfo;
   if($pageinfo!==false){
@@ -94,7 +94,7 @@ function page_modified_date(){
     $date=$f[1];
   }else{
     $ipaddr='';
-    $date=date('Y-m-d H:i:s',@filemtime('.data/page.'.$pageid.'.htm'));
+    $date=date('Y-m-d H:i:s',@filemtime('.lwiki/data/page.'.$pageid.'.htm'));
   }
 
   $line=$date;
@@ -111,38 +111,38 @@ case 'edit':
 
   $page_updated=false;
   if(@$_POST['page_update']){
-    require_once ".lib/lib.page-edit.php";
+    require_once ".lwiki/lib/lib.page-edit.php";
     $page_updated=lwiki\edit\page_update();
   }
 
   if(!$page_updated){
-    include ".lib/page.edit.php";
+    include ".lwiki/lib/page.edit.php";
   }else{
     header("Location: index.php?id=$pageid"); // flush post data
   }
   exit;
 case 'list':
-  include '.lib/page.list.php';
+  include '.lwiki/lib/page.list.php';
   exit;
 case 'hist':
-  include '.lib/page.hist.php';
+  include '.lwiki/lib/page.hist.php';
   exit;
 case 'convert': // (preview 等の実装用に content を変換する)
-  require_once '.lib/lib.lwiki.php';
-  require_once '.lib/lib.page.php'; /* for \lwiki\page\generate_dynamic_link() */
+  require_once '.lwiki/lib/lib.lwiki.php';
+  require_once '.lwiki/lib/lib.page.php'; /* for \lwiki\page\generate_dynamic_link() */
   lwiki_include_string(lwiki\convert\convert($_POST['content']));
   exit;
 default:
   if($_GET['hist']!=''){
-    include ".lib/page.diff.php";
+    include ".lwiki/lib/page.diff.php";
     exit;
   }
 
   if($_GET['command']=='comment-regenerate'){
-    require_once ".lib/cmd.comment-add.php";
+    require_once ".lwiki/lib/cmd.comment-add.php";
     comment_regenerate();
   }else if($_GET['command']=='page-convert'){
-    require_once ".lib/lib.page-edit.php";
+    require_once ".lwiki/lib/lib.page-edit.php";
     \lwiki\edit\page_convert();
   }
 
@@ -150,7 +150,7 @@ default:
   $comment_name=$_COOKIE['comment-name'];
   $comment_body="";
   if(@$_POST['type']=='comment_add'){
-    require_once ".lib/cmd.comment-add.php";
+    require_once ".lwiki/lib/cmd.comment-add.php";
     $comment_added=comment_add();
     if($comment_added){
       $comment_name=$_POST['name'];
@@ -162,7 +162,7 @@ default:
     }
   }
 
-  include ".lib/page.read.php";
+  include ".lwiki/lib/page.read.php";
   break;
 }
 

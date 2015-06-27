@@ -11,7 +11,7 @@ class lwiki_hist{
   private $m_sources=null;
   public function __construct(){
     global $pageid;
-    $this->fhist=".data/page.$pageid.hist";
+    $this->fhist=".lwiki/data/page.$pageid.hist";
     $this->fhist_name="page.$pageid.hist";
     $this->m_data=array();
     $this->m_sources=array();

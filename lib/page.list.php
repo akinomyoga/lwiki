@@ -33,7 +33,7 @@
     return $ret;
   }
 
-  $pages=mwg_file_list('./.data','/page..*\.htm$/');
+  $pages=mwg_file_list('./.lwiki/data','/page..*\.htm$/');
   echo '<table class="normal center">'.PHP_EOL;
   echo '<tr><th>ページ名</th><th>編集者</th><th>最終更新日時</th></tr>';
   foreach($pages as $page){
@@ -41,7 +41,7 @@
       continue;
     $page_id=$m[1];
     $page_name=urldecode($m[1]);
-    $page_date=date('Y-m-d H:i:s',filemtime('./.data/'.$page));
+    $page_date=date('Y-m-d H:i:s',filemtime('./.lwiki/data/'.$page));
 
     $htmlPageName=htmlspecialchars($page_name);
     $htmlPageDate=htmlspecialchars($page_date).' [<a href="index.php?id='.htmlspecialchars($page_id).'&hist=last">差分</a>]';
@@ -49,7 +49,7 @@
   }
   echo '</table>'.PHP_EOL;
 
-  $editlogs=@file('./.data/log.edit.txt');
+  $editlogs=@file('./.lwiki/data/log.edit.txt');
   if($editlogs!=null&&count($editlogs)){
     echo '<h2>最近のページ編集</h2>';
     echo '<ul>';

@@ -16,7 +16,7 @@
 <p class="lwiki-linkbar-main">
   [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]
   <?php
-    $fname_content='.data/page.'.$pageid.'.htm';
+    $fname_content='.lwiki/data/page.'.$pageid.'.htm';
     $url_edit=htmlspecialchars("index.php?id=$pageid&mode=edit");
     echo
       ' [ <a href="?id='.$pageid.'">'.$ht_page_title.'</a>'.
@@ -29,7 +29,7 @@
 <?php
   if($_GET['mode']=='hist'){
     
-    $fname_hist='.data/page.'.$pageid.'.hist';
+    $fname_hist='.lwiki/data/page.'.$pageid.'.hist';
     if(file_exists($fname_hist)){
       echo '<table class="normal center">'.PHP_EOL;
       echo '<tr><th>版</th><th>更新日時</th><th>編集者</th><th>註</th><th>履歴容量</th></tr>';

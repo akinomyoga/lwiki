@@ -26,7 +26,7 @@
 <p class="lwiki-linkbar-main">
   [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]
   <?php
-    $fname_content='.data/page.'.$pageid.'.htm';
+    $fname_content='.lwiki/data/page.'.$pageid.'.htm';
     echo
       ' [ <a href="?id='.$pageid.'">'.$ht_page_title.'</a>'.
       ' | <b>編集</b>'.
@@ -53,7 +53,7 @@
     echo '<hr/>'.PHP_EOL;
     echo '<div class="lwiki-page-preview" id="lwiki_page_preview">';
     echo '<h1 id="lwiki_page_preview_head">プレビュー:'.$ht_page_title.($frag_partlength?' (部分)':'').'</h1>';
-    require_once '.lib/lib.lwiki.php';
+    require_once '.lwiki/lib/lib.lwiki.php';
     lwiki_include_string(\lwiki\convert\convert($edit_session->content()));
     echo '</div>';
   //}

@@ -5,7 +5,7 @@
 <p class="lwiki-linkbar-main">
   [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]
   <?php
-    $fname_content='.data/page.'.$pageid.'.htm';
+    $fname_content='.lwiki/data/page.'.$pageid.'.htm';
     $url_edit=htmlspecialchars("index.php?id=$pageid&mode=edit");
     echo
       ' [ <b>'.$ht_page_title.'</b>'.
@@ -27,7 +27,7 @@
   // comment
   if($content_exists){
     echo '<h2 class="comment">コメント</h2>';
-    $comment_content=@file_get_contents(".data/$comment_id.htm");
+    $comment_content=@file_get_contents(".lwiki/data/$comment_id.htm");
     if($comment_content==''){
       echo "<p>コメントは未だありません</p>";
     }else{
@@ -35,7 +35,7 @@
     }
 
     $comment_action="index.php?id=$pageid#comment-form";
-    include ".lib/stub.comment-form.php";
+    include ".lwiki/lib/stub.comment-form.php";
   }
 ?>
 </div>

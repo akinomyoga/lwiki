@@ -76,14 +76,14 @@ class edit_session_data{
   }
 
   public function exists(){
-    $fwiki=".data/page.".$this->pageid.".wiki";
+    $fwiki=".lwiki/data/page.".$this->pageid.".wiki";
     return file_exists($fwiki);
   }
 
   private function create_new(){
     $this->initialized=true;
 
-    $fwiki=".data/page.".$this->pageid.".wiki";
+    $fwiki=".lwiki/data/page.".$this->pageid.".wiki";
     $this->content=lwiki_canonicalize_linebreaks(@file_get_contents($fwiki));
     if($this->content===false)
       $this->content='';
@@ -129,7 +129,7 @@ $edit_session=new edit_session_data($pageid,$_GET['part']);
 function page_convert(){
   global $flock,$pageid;
 
-  $fname_wiki=".data/page.$pageid.wiki";
+  $fname_wiki=".lwiki/data/page.$pageid.wiki";
   // ロック
   if(!$flock->lock($fname_wiki)){
     error("sorry, failed to lock the file, 'page.$pageid.wiki'.");
@@ -141,7 +141,7 @@ function page_convert(){
   $conv=\lwiki\convert\create_converter();
   $conv->setCustomGenerateEditLink('default');
   $phtml=$conv->convert($wiki);
-  if(!$flock->file_atomic_save_locked(".data/page.$pageid.htm",$phtml)){
+  if(!$flock->file_atomic_save_locked(".lwiki/data/page.$pageid.htm",$phtml)){
     error('(page_update): sorry, failed to save html to page.htm.');
     $flock->unlock($fname_wiki);
     return false;
@@ -190,7 +190,7 @@ class page_update_proc{
     $hist->unlock();
 
     $editlog=$ipaddr.'/'.urlencode($date).'/'.$pageid.'/'.$hindex.PHP_EOL;
-    if(!$flock->file_atomic_append_locked(".data/log.edit.txt",$editlog)){
+    if(!$flock->file_atomic_append_locked(".lwiki/data/log.edit.txt",$editlog)){
       error('(page_update): sorry, failed to add log to recent edits.');
     }
 
@@ -218,7 +218,7 @@ class page_update_proc{
     }
 
     {
-      $fname_wiki=".data/page.$pageid.wiki";
+      $fname_wiki=".lwiki/data/page.$pageid.wiki";
       // ロック
       if(!$flock->lock($fname_wiki)){
         error("sorry, failed to lock the file, 'page.$pageid.wiki'.");
@@ -272,7 +272,7 @@ class page_update_proc{
     $conv=\lwiki\convert\create_converter();
     $conv->setCustomGenerateEditLink('default');
     $content=$conv->convert($content);
-    if(!$flock->file_atomic_save_locked(".data/page.$pageid.htm",$content)){
+    if(!$flock->file_atomic_save_locked(".lwiki/data/page.$pageid.htm",$content)){
       error('(page_update): sorry, failed to save html to page.htm.');
       return false;
     }
@@ -282,7 +282,7 @@ class page_update_proc{
     $info.=urlencode($conv->tags).PHP_EOL; // タグ
     $info.=urlencode($conv->keywords).PHP_EOL; // 索引
 
-    if(!$flock->file_atomic_save_locked(".data/page.$pageid.info",$info)){
+    if(!$flock->file_atomic_save_locked(".lwiki/data/page.$pageid.info",$info)){
       error('(page_update): sorry, failed to update the page information in page.info.');
     }
     

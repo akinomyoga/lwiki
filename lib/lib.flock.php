@@ -130,6 +130,6 @@ class file_lock{
   }
 }
 
-$flock=new file_lock('.lock');
+$flock=new file_lock('.lwiki/lock');
 
 ?>
