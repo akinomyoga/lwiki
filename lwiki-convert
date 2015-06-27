@@ -1,0 +1,19 @@
+<?php // -*- mode:php -*-
+
+function lwiki_hash($key,$salt='4fa52acaf207'){
+  return substr(base64_encode(md5('salt+'.$salt.'+'.$key,true)),0,12);
+}
+
+require_once dirname(__FILE__).'/lib/lib.lwiki.php';
+
+if($argv[1]==NULL)
+  $fname='php://stdin';
+else
+  $fname=$argv[1];
+
+// echo file_get_contents($fname);
+$content=file_get_contents($fname);
+$content=lwiki\convert\convert($content);
+echo $content.PHP_EOL;
+
+?>

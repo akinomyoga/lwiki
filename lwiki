@@ -1,0 +1,84 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------------
+# from mshex/functions/hdirname.sh
+
+function hdirname/readlink {
+  local path="$1"
+  case "$OSTYPE" in
+  (cygwin|linux-gnu)
+    PATH=/bin:/usr/bin readlink -f "$path" ;;
+  (darwin*|*)
+    local PWD="$PWD" OLDPWD="$OLDPWD"
+    while [[ -h $path ]]; do
+      local link="$(PATH=/bin:/usr/bin readlink "$path" || true)"
+      [[ $link ]] || break
+
+      if [[ $link = /* || $path != */* ]]; then
+        path="$link"
+      else
+        local dir="${path%/*}"
+        path="${dir%/}/$link"
+      fi
+    done
+    echo -n "$path" ;;
+  esac
+}
+
+function hdirname {
+  if [[ $1 == -v ]]; then
+    eval '
+      '$2'="$3"
+      [[ -h ${'$2'} ]] && '$2'=$(hdirname/readlink "${'$2'}")
+
+      if [[ ${'$2'} == */* ]]; then
+        '$2'="${'$2'%/*}"
+        : "${'$2':=/}"
+      else
+        '$2'="${4-$PWD}"
+      fi
+    '
+  elif [[ $1 == -v* ]]; then
+    hdirname -v "${1:2}" "${@:2}"
+  else
+    local ret
+    hdirname -v ret "$@"
+    echo -n "$ret"
+  fi
+}
+#------------------------------------------------------------------------------
+
+hdirname -v LWIKIPATH "$0"
+
+function convert {
+  php "$LWIKIPATH/lwiki-convert" "$@"
+}
+
+function command.view {
+  convert "$@" | w3m -T text/html
+}
+
+# function command.links {
+#   ftmp="$(mktemp XXXXXXXXXX.htm)"
+#   convert "$@" > "$ftmp"
+#   links  -html-assume-codepage utf-8 "$ftmp"
+#   rm -f "$ftmp"
+# }
+
+function command.convert {
+  convert "$@"
+}
+
+if [[ ! $1 ]]; then
+  echo "lwiki: operation not specified" >&2
+  exit 1
+fi
+name="$1"
+shift 1
+
+if ! declare -f "command.$name" &> /dev/null; then
+  echo "lwiki: unrecognized operation: '$name'" >&2
+  exit 1
+fi
+
+"command.$name" "$@"

@@ -1,0 +1,12 @@
+
+
+* lib.lwiki.php: リンク生成のコードを差し替えられる様にする
+* lib.lwiki.php: [編集] を表示しない様にする。
+
+* 2015-01-22
+  - lib.lwiki.php: removed a global variable $lwiki_lang_instance.
+    The variable is moved to a class static variable `lwiki_language::$defaultInstance'
+    since, in PHP global variables cannot belong to a namespace.
+  - lib.lwiki.php: Now, edit links are defaultly not emitted.
+    only when the page content is updated, the edit links are generated.
+  - page.list.php: changed to show recently updated pages.
