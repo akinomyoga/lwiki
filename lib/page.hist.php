@@ -3,14 +3,7 @@
   require_once "lib.page.php";
 
   $frag_title='履歴:'.$ht_page_title;
-
-  lwiki\page\begin_document($frag_title,'<meta name="robots" content="none" />');
-  // 以下は余分に出力される物:
-  // <meta http-equiv="Content-Script-Type" content="text/javascript" />
-  // <base href="{$_SERVER['PHP_SELF']}?id=$pageid" />
-  // <meta name="agh-fly-type" content="color,tex" />
-  // <script type="application/x-tex" id="tex-preamble">\documentclass{article}\usepackage{amsmath,amssymb,bm,color}\edef\lbrace{\{}\edef\rbrace{\}}</script>
-  // <script type="text/javascript" charset="utf-8" src="/~murase/agh/agh.fly.js"></script>
+  lwiki\page\begin_document($frag_title,'<meta name="robots" content="none" />'.PHP_EOL);
 
 ?>
 <p class="lwiki-linkbar-main">

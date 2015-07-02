@@ -1,4 +1,4 @@
-<?php // -*- mode:nxml -*-
+<?php // -*- mode:js -*-
   require_once "lib.page-edit.php";
   require_once "lib.page.php";
 
@@ -21,7 +21,7 @@
   $frag_remarks =htmlspecialchars($_POST['remarks']);
   $frag_partlength=$edit_session->is_part()?'<input type="hidden" name="partlength" value="'.$edit_session->partlength().'" />'.PHP_EOL:'';
 
-  lwiki\page\begin_document($frag_title,'<meta name="robots" content="none" />');
+  lwiki\page\begin_document($frag_title,'<meta name="robots" content="none" />'.PHP_EOL);
 ?>
 <p class="lwiki-linkbar-main">
   [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]

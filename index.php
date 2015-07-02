@@ -5,8 +5,8 @@
 
 const LWIKI_PHP_BEGIN_TAG="<\x3Fphp ";
 const LWIKI_PHP_END_TAG="\x3F>";
-
-const LWIKI_URL_PDF_ICON='/~murase/agh/icons/file-pdf.png';
+$LWIKI_URL_AGH='/~murase/agh';
+$LWIKI_URL_PDF_ICON=LWIKI_URL_AGH.'/icons/file-pdf.png';
 
 function lwiki_include_string($html){
   // $html の中に含まれている php ディレクティブを処理したい
@@ -76,6 +76,11 @@ function lwiki_auth_generate(){
 // $lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$_SERVER['PHP_SELF']);
 // $lwiki_base_resourceDirectoryUrl=$lwiki_base_wikiDirectoryUrl.'/res';
 $lwiki_base_resourceDirectoryUrl=preg_replace('/index\.php$/','res',$_SERVER['PHP_SELF']);
+
+$lwiki_page_commonHead=<<<EOS
+EOS;
+
+//---------------------------------------------------------------------------
 
 $page_title=$_GET['id'];
 if($page_title==''){

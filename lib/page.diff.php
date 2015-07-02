@@ -98,7 +98,7 @@
     $diff_links.='<span style="color:gray;">次</span>';
 
   //-----------------------------------
-  lwiki\page\begin_document($hist_title,'<meta name="robots" content="none" />');
+  lwiki\page\begin_document($hist_title,'<meta name="robots" content="none" />'.PHP_EOL);
 ?>
 <p class="lwiki-linkbar-main">
   [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]

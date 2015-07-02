@@ -24,6 +24,8 @@ function generate_dynamic_link($html,$name,$hash){
 function begin_document($title,$headContent=""){
   global $lwiki_base_resourceDirectoryUrl;
   global $pageid;
+  global $lwiki_page_commonHead;
+  global $LWIKI_URL_AGH;
   if($headContent!=""){
     $headContent=preg_replace('/\s*\z/su',PHP_EOL,
       preg_replace('/^/mu','  ',$headContent),1);
@@ -37,16 +39,15 @@ function begin_document($title,$headContent=""){
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
-$headContent  <title>$title</title>
-  <!--<base href="{$_SERVER['PHP_SELF']}?id=$pageid" /> IE7以下で動かない -->
-  <link rel="stylesheet" type="text/css" charset="utf-8" href="/~murase/agh/mwg.slide.css" />
-  <link rel="stylesheet" type="text/css" charset="utf-8" href="/~murase/agh/prog.std.css" />
-  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$lwiki_base_resourceDirectoryUrl}/lwiki.css" />
+  <title>$title</title>
+$headContent  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWIKI_URL_AGH}/mwg.slide.css" />
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWIKI_URL_AGH}/prog.std.css" />
   <meta name="agh-fly-type" content="color,tex" />
   <script type="application/x-tex" id="tex-preamble">\documentclass{article}\usepackage{amsmath,amssymb,bm,color}\edef\lbrace{\{}\edef\rbrace{\}}</script>
-  <script type="text/javascript" charset="utf-8" src="/~murase/agh/agh.fly.js"></script>
+  <script type="text/javascript" charset="utf-8" src="{$LWIKI_URL_AGH}/agh.fly.js"></script>
   <script type="text/javascript" charset="utf-8" src="{$lwiki_base_resourceDirectoryUrl}/lwiki.js"></script>
-</head>
+  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$lwiki_base_resourceDirectoryUrl}/lwiki.css" />
+$lwiki_page_commonHead</head>
 <body class="lwiki-menued">
 
 EOF;

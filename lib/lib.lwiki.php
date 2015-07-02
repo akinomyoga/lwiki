@@ -320,8 +320,8 @@ class lwiki_language{
   /**
    * @fn register_entity($name,$hasa,$hasb,$proc)
    * @param[in] $name
-   * @param[in] $hasa
-   * @param[in] $hasb
+   * @param[in] $hasa true or false
+   * @param[in] $hasb true, 'block', or false
    * @param[in] $proc function($name,$args,$cont,$conv,$content,&$i){}
    *   $name is the name of the entity.
    *   $args is the '(...)' arguments in the form of an array.
@@ -1165,24 +1165,6 @@ lwiki_language::$defaultInstance->register_pattern(
       }
       break;
       //-----------------------------------
-    case 'math':
-      if(false!==($cont=lwc_read_brace($content,$i))){
-        $pos=$i;
-        return '<span class="aghfly-tex-math">'.htmlspecialchars($cont).'</span>';
-      }
-      break;
-    case 'begin':
-      if(($args=lwc_read_args($content,$i))){
-        if(preg_match('/^[\w*@]+$/u',$args[0])){
-          if(false!==($cont=lwc_read_brace($content,$i))){
-            lwc_skip_single_nl($content,$i);
-            $pos=$i;
-            return '<div class="aghfly-begin-'.$args[0].'">'.htmlspecialchars($cont).'</div>';
-          }
-        }
-      }
-      break;
-      //-----------------------------------
     case 'tag':
       if(false!==($cont=lwc_read_brace($content,$i))){
         $pos=$i;
@@ -1253,7 +1235,6 @@ lwiki_language::$defaultInstance->register_entity('img',true,true,function($name
   return '<img'.$style.$alt.' src="'.htmlspecialchars(trim($cont)).'" />';
 });
 
-
 // inline constructs (two character inline sequences)
 // - >>\d+ comment reference
 // - ~~    line break
@@ -1269,7 +1250,7 @@ lwiki_language::$defaultInstance->register_entity('img',true,true,function($name
 // - $     inline math-mode latex
 // - <?\w+ code
 lwiki_language::$defaultInstance->register_pattern(
-  '(>>\d+|~~|\[\[|'."'''?".'|##|%%|__|,,|\^\^|==|(?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[a-zA-Z][\w_]*\b\*?\s?))',
+  '(>>\d+|~~|\[\[|'."'''?".'|##|%%|__|,,|\^\^|==)',
   function($conv,$spec,$content,&$pos){
     $spec2=mb_substr($spec,0,2);
     switch($spec2){
@@ -1296,23 +1277,6 @@ lwiki_language::$defaultInstance->register_pattern(
         break;
       case '==':$tag='dfn';break;
       case '##':$tag='em class="lwiki-marker"';$etag='em';break;
-      case '$':
-        $term='(?<=\S)\$(?!\w)';
-        $tag='span class="aghfly-tex-math"';
-        $etag='span';
-        $isverb=true;
-        break;
-      case '<?':
-        $lang=trim(substr($spec,2));
-        if(substr($lang,-1)==='*')
-          $lang=mb_substr($lang,0,-1);
-        else
-          $isverb=true;
-
-        $term='\?\>';
-        $tag='code class="agh-prog-'.$lang.'"';
-        $etag='code';
-        break;
       }
       if(!$term)$term=$spec;
       if(!$etag)$etag=$tag;
@@ -1403,6 +1367,73 @@ lwiki_language::$defaultInstance->register_pattern(
     return htmlspecialchars($spec);
   }
 );
+
+//-----------------------------------------------------------------------------
+// ここから: Ageha JavaScript Library 依存
+
+lwiki_language::$defaultInstance->register_entity('math',false,true,function($name,$args,$cont,$conv,$content,&$i){
+  if($cont===false)return false;
+  return '<span class="aghfly-tex-math">'.htmlspecialchars($cont).'</span>';
+});
+lwiki_language::$defaultInstance->register_entity('begin',true,true,function($name,$args,$cont,$conv,$content,&$i){
+  if($args!==false&&preg_match('/^[\w*@]+$/u',$args[0])){
+    if($cont!==false){
+      lwc_skip_single_nl($content,$i);
+      return '<div class="aghfly-begin-'.$args[0].'">'.htmlspecialchars($cont).'</div>';
+    }
+  }
+  return false;
+});
+lwiki_language::$defaultInstance->register_pattern(
+  '((?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[a-zA-Z][\w_]*\b\*?\s?))',
+  function($conv,$spec,$content,&$pos){
+    $spec2=mb_substr($spec,0,2);
+    switch($spec2){
+    case '$':case '<?':
+      $tag='span';
+      $isverb=false;
+      switch($spec2){
+      case '$':
+        $term='(?<=\S)\$(?!\w)';
+        $tag='span class="aghfly-tex-math"';
+        $etag='span';
+        $isverb=true;
+        break;
+      case '<?':
+        $lang=trim(substr($spec,2));
+        if(substr($lang,-1)==='*')
+          $lang=mb_substr($lang,0,-1);
+        else
+          $isverb=true;
+
+        $term='\?\>';
+        $tag='code class="agh-prog-'.$lang.'"';
+        $etag='code';
+        break;
+      }
+      if(!$term)$term=$spec;
+      if(!$etag)$etag=$tag;
+
+      if(false!==($cont=lwc_read_until($term,$content,$pos))){
+        if($isverb)
+          $cont=htmlspecialchars($cont);
+        else
+          $cont=$conv->iconvert($cont);
+
+        if($spec=='==')
+          $conv->keywords_append(lwc_html_gettext($cont));
+
+        return '<'.$tag.'>'.$cont.'</'.$etag.'>';
+      }
+      break;
+    }
+
+    return htmlspecialchars($spec);
+  }
+);
+
+// ここまで: Ageha JavaScript Library 依存
+//-----------------------------------------------------------------------------
 
 lwiki_language::$defaultInstance->register_pattern(
   '(  +|[&<>\n\t]|\\\\\n)',

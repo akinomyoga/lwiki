@@ -1,18 +1,6 @@
 <?php // -*- mode:js -*-
 
-  if($comment_authcode_cookie!=$comment_authcode){
-    require_once 'securimage.php';
-    $opts=array(
-      'securimage_path' => '/~murase/php/',
-      'image_id' => 'lwiki_simg',
-      'image_alt_text' => 'letters',
-      'input_id' => 'lwiki_simi',
-      'show_audio_button' => false,
-      'refresh_alt_text' => '別画像',
-      'refresh_title_text' => '別画像',
-      'input_text' => '上の文字:');
-    $html_captcha='<div class="securimage-captcha">'.Securimage::getCaptchaHtml($opts).'</div>';
-  }
+  $html_captcha=lwiki_auth_generate();
 
   if($comment_action=='')
     $comment_action="index.php?id=$pageid";
