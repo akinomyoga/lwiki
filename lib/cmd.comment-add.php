@@ -4,8 +4,6 @@
 
 include_once "lib.flock.php";
 include_once "lib.lwiki.php";
-if($comment_authcode_cookie!=$comment_authcode)
-  require_once 'securimage.php';
 
 $comment_error="";
 function comment_echoe($html){
@@ -14,8 +12,8 @@ function comment_echoe($html){
 }
 
 // 何れのデータ(.dat/.htm/.last)の書き換え中も $fdat をロックする事にする。
-$fdat=".data/$comment_id.dat";
-$fhtm=".data/$comment_id.htm";
+$fdat="./.lwiki/data/$comment_id.dat";
+$fhtm="./.lwiki/data/$comment_id.htm";
 
 function comment_generate_html($ipaddr,$date,$name,$body,$count){
   // ID
@@ -44,21 +42,8 @@ function comment_generate_html($ipaddr,$date,$name,$body,$count){
 function comment_add(){
   global $flock,$comment_id;
 
-  // 認証
-  global $comment_authcode,$comment_authcode_cookie;
-  if($comment_authcode_cookie!=$comment_authcode){
-    $scode=$_POST['lwiki_simi'];
-    $simg=new Securimage();
-    if(!$scode||$scode==''){
-      comment_echoe('画像認証コードが入力されていません。');
-      return false;
-    }else if($simg->check($scode)!==true){
-      comment_echoe('画像認証に失敗');
-      return false;
-    }
-    setcookie('comment-authcode',$comment_authcode,time()+24*60*60);
-    $comment_authcode_cookie=$comment_authcode;
-  }
+  global $comment_error;
+  if(lwiki_auth_check($comment_error)!=0)return false;
 
   $name=$_POST['name'];
   $body=$_POST['body'];
@@ -81,17 +66,17 @@ function comment_add(){
 
   global $fdat,$fhtm;
   if(!$flock->lock($fdat)){
-    comment_echoe('(comment_add): sorry, failed to lock the comment.dat file.');
+    comment_echoe("(comment_add): sorry, failed to lock the file `$fdat'.");
     return false;
   }
 
   $name=htmlspecialchars($name);
   $ipaddr=$_SERVER["REMOTE_ADDR"];
   $date=@date('Y-m-d H:i:s T');
-  $count=$flock->file_increment(".data/$comment_id.count");
+  $count=$flock->file_increment("./.lwiki/data/$comment_id.count");
 
   $chklast=$ipaddr.'/'.urlencode($name).'/'.urlencode($body);
-  $flast=".data/$comment_id.last";
+  $flast="./.lwiki/data/$comment_id.last";
   if($chklast==@file_get_contents($flast)){
     comment_echoe('二重投稿です');
     $flock->unlock($fdat);
@@ -100,7 +85,7 @@ function comment_add(){
 
   $dat=$ipaddr.'/'.$date.'/'.urlencode($name).'/'.urlencode($body).'/'.$count."\n";
   if(false===@file_put_contents($fdat,$dat,FILE_APPEND)){
-    comment_echoe('(comment_add): sorry, failed to append an entry to comment.dat file.');
+    comment_echoe("(comment_add): sorry, failed to append an entry to the file `$fdat'.");
     $flock->unlock($fdat);
     return false;
   }

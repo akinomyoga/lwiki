@@ -12,6 +12,7 @@ function lwiki_auth_check(&$errorMessage){
       $errorMessage='画像認証コードが入力されていません。';
       return 2;
     }
+
     require_once 'securimage.php';
     $simg=new Securimage();
     if($simg->check($scode)!==true){
