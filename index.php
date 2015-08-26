@@ -65,6 +65,7 @@ function page_modified_date(){
 }
 
 $comment_id='comment.'.$pageid;
+$comment_error='';
 
 switch(@$_GET['mode']){
 case 'edit':
