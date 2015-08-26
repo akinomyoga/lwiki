@@ -17,7 +17,7 @@
     $dir=opendir($dirname);
     if($dir!==false){
       while(false!==($file=readdir($dir))){
-        if(preg&&preg_match($preg,$file))
+        if($preg&&preg_match($preg,$file))
           array_push($ret,$file);
       }
       closedir($dir);
@@ -35,7 +35,7 @@
       continue;
     $page_id=$m[1];
     $page_name=urldecode($m[1]);
-    $page_date=date('Y-m-d H:i:s',filemtime('./.lwiki/data/'.$page));
+    $page_date=@date('Y-m-d H:i:s T',filemtime('./.lwiki/data/'.$page));
 
     $htmlPageName=htmlspecialchars($page_name);
     $htmlPageDate=htmlspecialchars($page_date).' [<a href="index.php?id='.htmlspecialchars($page_id).'&hist=last">差分</a>]';

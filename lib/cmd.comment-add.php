@@ -87,7 +87,7 @@ function comment_add(){
 
   $name=htmlspecialchars($name);
   $ipaddr=$_SERVER["REMOTE_ADDR"];
-  $date=date('Y-m-d H:i:s');
+  $date=@date('Y-m-d H:i:s T');
   $count=$flock->file_increment(".data/$comment_id.count");
 
   $chklast=$ipaddr.'/'.urlencode($name).'/'.urlencode($body);

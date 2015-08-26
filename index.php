@@ -55,7 +55,7 @@ function page_modified_date(){
     $date=$f[1];
   }else{
     $ipaddr='';
-    $date=date('Y-m-d H:i:s',@filemtime('.lwiki/data/page.'.$pageid.'.htm'));
+    $date=@date('Y-m-d H:i:s T',@filemtime('.lwiki/data/page.'.$pageid.'.htm'));
   }
 
   $line=$date;

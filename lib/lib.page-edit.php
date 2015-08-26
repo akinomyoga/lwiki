@@ -206,7 +206,7 @@ class page_update_proc{
     global $flock,$pageid;
 
     $ipaddr=$_SERVER["REMOTE_ADDR"];
-    $date=date('Y-m-d H:i:s T');
+    $date=@date('Y-m-d H:i:s T');
 
     global $edit_session;
     $content=$edit_session->content();
