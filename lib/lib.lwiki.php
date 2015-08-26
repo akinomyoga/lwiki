@@ -1137,17 +1137,21 @@ lwiki_language::$defaultInstance->register_pattern(
       //   $isblock   = false ! 末尾の改行を削除するか?
 
       // (...) → $className: class 属性を読み取り
+      $attributes='';
       $className='';
       if(($args=lwc_read_args($content,$i))){
-        // for($i=0,$i=count($args);$i<$iN;$i++){
-        //   $a=$args[i];
-        //   if(preg_match('/^[\w\s-_]+$/u',$a))
-        //     $className.=trim($a);
-        // }
-        if(preg_match('/^[\w\s-_]+$/u',$args[0]))
-          $className=trim($args[0]);
+        for($j=0,$jN=count($args);$j<$jN;$j++){
+          $a=trim($args[$j]);
+          if($name=='pre'&&preg_match('/^title=(.*)$/u',$a,$m)){
+            $className=($className?$className.' ':'').'agh-prog-titled';
+            $attributes.=' data-title="'.htmlspecialchars($m[1]).'"';
+          }else if(preg_match('/^[\w\s_-]+$/u',$a))
+            $className=$className?$className.' '.$a:$a;
+        }
+        // if(preg_match('/^[\w\s-_]+$/u',$args[0]))
+        //   $className=trim($args[0]);
       }
-      if($className)$className=' class="'.htmlspecialchars($className).'"';
+      if($className)$attributes.=' class="'.htmlspecialchars($className).'"';
 
       $cont=$isblock?lwc_read_block($content,$i):lwc_read_brace($content,$i);
       if($cont!==false){
@@ -1161,7 +1165,7 @@ lwiki_language::$defaultInstance->register_pattern(
         }else
           $cont=htmlspecialchars($cont);
         $pos=$i;
-        return '<'.$name.$className.'>'.$cont.'</'.$name.'>';
+        return '<'.$name.$attributes.'>'.$cont.'</'.$name.'>';
       }
       break;
       //-----------------------------------
