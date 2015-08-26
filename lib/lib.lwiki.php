@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
 
 // lib.lwiki.php
 // version 3.0

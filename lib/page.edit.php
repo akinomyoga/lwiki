@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
   require_once "lib.page-edit.php";
   require_once "lib.page.php";
 

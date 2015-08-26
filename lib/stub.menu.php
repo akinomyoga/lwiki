@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
 
 global $pageid,$pageinfo;
 

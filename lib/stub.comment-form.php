@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
 
   $html_captcha=lwiki_auth_generate();
 

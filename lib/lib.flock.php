@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
 
 // http://www.programming-magic.com/20080211020413/ 改
 class file_lock{

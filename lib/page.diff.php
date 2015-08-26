@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
   require_once 'lib.lwiki.php';
   require_once 'lib.ldiff.php';
   require_once 'lib.hist.php';

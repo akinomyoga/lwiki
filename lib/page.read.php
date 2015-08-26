@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
   require_once 'lib.page.php';
   lwiki\page\begin_document($ht_page_title);
 ?>

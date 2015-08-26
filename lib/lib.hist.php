@@ -1,4 +1,4 @@
-<?php // -*- mode:js -*-
+<?php // -*- mode:php -*-
 
 require_once 'lib.flock.php';
 require_once 'lib.ldiff.php';
