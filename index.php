@@ -6,7 +6,7 @@
 const LWIKI_PHP_BEGIN_TAG="<\x3Fphp ";
 const LWIKI_PHP_END_TAG="\x3F>";
 $LWIKI_URL_AGH='/~murase/agh';
-$LWIKI_URL_PDF_ICON=LWIKI_URL_AGH.'/icons/file-pdf.png';
+$LWIKI_URL_PDF_ICON=$LWIKI_URL_AGH.'/icons/file-pdf.png';
 
 function lwiki_include_string($html){
   // $html の中に含まれている php ディレクティブを処理したい
@@ -112,7 +112,7 @@ $comment_id='comment.'.$pageid;
 
 switch($_GET['mode']){
 case 'edit':
-  $partlength=$_POST['partlength'];
+  $partlength=@$_POST['partlength'];
 
   $page_updated=false;
   if(@$_POST['page_update']){
@@ -138,21 +138,21 @@ case 'convert': // (preview 等の実装用に content を変換する)
   lwiki_include_string(lwiki\convert\convert($_POST['content']));
   exit;
 default:
-  if($_GET['hist']!=''){
+  if(@$_GET['hist']!=''){
     include ".lwiki/lib/page.diff.php";
     exit;
   }
 
-  if($_GET['command']=='comment-regenerate'){
+  if(@$_GET['command']=='comment-regenerate'){
     require_once ".lwiki/lib/cmd.comment-add.php";
     comment_regenerate();
-  }else if($_GET['command']=='page-convert'){
+  }else if(@$_GET['command']=='page-convert'){
     require_once ".lwiki/lib/lib.page-edit.php";
     \lwiki\edit\page_convert();
   }
 
   // コメント追加
-  $comment_name=$_COOKIE['comment-name'];
+  $comment_name=@$_COOKIE['comment-name'];
   $comment_body="";
   if(@$_POST['type']=='comment_add'){
     require_once ".lwiki/lib/cmd.comment-add.php";

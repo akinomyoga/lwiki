@@ -412,6 +412,7 @@ class lwiki_converter{
     //   m[1][0] 第一キャプチャ
     //   m[1][1] 第一キャプチャ開始位置 (byteOffset)
 
+    $ret='';
     $i=0;$iMax=strlen($content);
     while($i<$iMax&&preg_match($this->rex,$content,$m,PREG_OFFSET_CAPTURE,$i)){
       $ibegin=$m[0][1];

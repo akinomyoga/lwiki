@@ -99,7 +99,7 @@ class edit_session_data{
     $this->initialized=true;
     $this->content=lwiki_canonicalize_linebreaks($_POST['content']);
     $this->edithash=$_POST['edithash'];
-    $this->partlength=$_POST['partlength'];
+    $this->partlength=@$_POST['partlength'];
 
     if(!$this->edithash)
       $this->create_new();
@@ -123,7 +123,7 @@ class edit_session_data{
   }
 }
 
-$edit_session=new edit_session_data($pageid,$_GET['part']);
+$edit_session=new edit_session_data($pageid,@$_GET['part']);
 
 // 単に wiki→htm 変換を実行する
 function page_convert(){

@@ -104,6 +104,7 @@ function command.init {
   echo "lwiki-init: changing owner group of .lwiki/data and .lwiki/lock to \`apache'..."
   chmod 775 .lwiki/data .lwiki/lock
   sudo chown :apache .lwiki/data .lwiki/lock
+  sudo chcon -R -t httpd_sys_rw_content_t .lwiki/lock .lwiki/data
   echo "lwiki-init: done"
 }
 
