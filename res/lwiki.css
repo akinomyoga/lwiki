@@ -13,14 +13,16 @@ div.lwiki-page-holder p{text-indent:0;}
 div.lwiki-menu-holder>h1,
 div.lwiki-page-holder>h1{margin:0;}
 p.lwiki-page-wikilinks{margin:0.5em;}
-p.lwiki-page-wikilinks a{color:red;}
-p.lwiki-page-wikilinks a:hover{color:gray;}
 
 p.lwiki-linkbar-main,
 p.lwiki-linkbar-modified{margin:0.5em;}
 p.lwiki-linkbar-main{float:left;text-align:left;}
 p.lwiki-linkbar-modified{float:clear;text-align:right;}
-p.lwiki-linkbar-main a{color:red;}
+
+/* lwiki metailnks */
+p.lwiki-page-wikilinks a,
+p.lwiki-linkbar-main a{color:DodgerBlue;color:RoyalBlue;}
+p.lwiki-page-wikilinks a:hover,
 p.lwiki-linkbar-main a:hover{background-color:#ddd;}
 
 div.lwiki-page-content{margin:0px;padding:1em;padding-top:0;}
@@ -78,11 +80,17 @@ em.lwiki-marker{
 }
 
 /* links */
+a{color:green;}
+a:hover{color:gray;}
+
+a.lwiki-internal-link,
+a.lwiki-comment-anchor{text-decoration:none;}
+
 a.lwiki-missing-link{color:red;text-decoration:none;}
 a.lwiki-missing-link:hover{color:gray;}
 a.lwiki-missing-link:hover:after{content:" [作成]";font-size:10px;color:#800;}
 a.lwiki-external-ftp,
-a.lwiki-external-link{color:blue;}
+a.lwiki-external-link{color:Chocolate;}
 a.lwiki-external-mail{color:red;}
 a.lwiki-external-link:after{vertical-align:super;font-size:80%;content:"[→]";}
 a.lwiki-external-ftp:after{vertical-align:super;font-size:80%;content:"[→ftp]";}
@@ -102,8 +110,6 @@ a[href$='.pdf']:before{
   vertical-align:middle;
   content:"";}
 
-a.lwiki-internal-link,
-a.lwiki-comment-anchor{text-decoration:none;}
 img.lwiki-link-icon{vertical-align:middle;}
 
 /* quote */

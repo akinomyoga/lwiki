@@ -940,7 +940,7 @@ lwiki_language::$defaultInstance->register_pattern(
         $id='anchor-'.lwiki_hash($text.mt_rand(),'0f01437fac2b5f2f');
       $attrs.=' id="'.$id.'"';
 
-      $conv->header_append($level,'<a href="#'.$id.'">'.htmlspecialchars($text).'</a>');
+      $conv->header_append($level,'<a class="lwiki-internal-link" href="#'.$id.'">'.htmlspecialchars($text).'</a>');
       return '<'.$tag.$attrs.'>'.$cont.$partial_edit.'</'.$tag.'>'.PHP_EOL;
     case '+':
     case '-':
