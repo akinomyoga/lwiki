@@ -482,7 +482,7 @@ class lwiki_converter{
   private $m_keywords_dict=array();
   public function keywords_append($kwd){
     $kwd=trim(preg_replace('/\s+/u',' ',$kwd));
-    if($kwd&&!$this->m_keywords_dict[$kwd]){
+    if($kwd&&!@$this->m_keywords_dict[$kwd]){
       $this->m_keywords.=$kwd."\n";
       $this->m_keywords_dict[$kwd]=true;
     }
@@ -1283,8 +1283,8 @@ lwiki_language::$defaultInstance->register_pattern(
       case '==':$tag='dfn';break;
       case '##':$tag='em class="lwiki-marker"';$etag='em';break;
       }
-      if(!$term)$term=$spec;
-      if(!$etag)$etag=$tag;
+      if(!@$term)$term=$spec;
+      if(!@$etag)$etag=$tag;
 
       if(false!==($cont=lwc_read_until($term,$content,$pos))){
         if($isverb)
@@ -1445,7 +1445,7 @@ lwiki_language::$defaultInstance->register_pattern(
   function($conv,$letter,$content,&$pos){
     switch($letter){
     case "\\\n":return '';
-    case "\n":return '<br/>';
+    case "\n":return '<br/>'.PHP_EOL;
     case ' ':return '&#x20;';
     case "\t":return '&nbsp;&nbsp;&nbsp;&nbsp;';
     default:
