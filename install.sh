@@ -100,6 +100,8 @@ function command.install {
                lib/page.read.php \
                lib/stub.comment-form.php \
                lib/stub.menu.php \
+               res/lwiki.js \
+               res/lwiki.css \
                lwiki \
                lwiki-convert \
                lwiki_config.php

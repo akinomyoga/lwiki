@@ -51,7 +51,54 @@ function hdirname {
 hdirname -v LWIKIPATH "$0"
 
 function convert {
-  php "$LWIKIPATH/lwiki-convert" "$@"
+  local file=
+  local opt_error=
+  local opt_header=
+  local opt_aghbase=http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh
+  while (($#)); do
+    local arg="$1"
+    shift
+    case "$arg" in
+    (--header) opt_header=1 ;;
+    (--aghbase=*) opt_aghbase=${arg#*=} ;;
+    (-*)
+      opt_error=1
+      echo "${0##*/} (arg $arg): an unrecognized option." >&2 ;;
+    (*)
+      if [[ $file ]]; then
+        opt_error=1
+        echo "${0##*/} (arg $arg): multiple files cannot be specified." >&2
+      fi
+
+      if [[ ! -e $arg ]]; then
+        opt_error=1
+        echo "${0##*/} (arg $arg): the specified file does not exist." >&2
+      elif [[ ! -f $arg ]]; then
+        opt_error=1
+        echo "${0##*/} (arg $arg): the specified file is not an ordinary file." >&2
+      else
+        file="$arg"
+      fi ;;
+    esac
+  done
+
+  if [[ ! $file ]]; then
+    opt_error=1
+    echo "${0##*/} (arg $arg): an input file is not specified." >&2
+  fi
+
+  [[ $opt_error ]] && return 1
+
+  if [[ $opt_header ]]; then
+    printf '<html><head><meta name="agh-fly-type" content="color,tex" /><script src="%s/agh.fly.js"></script></head>\n' "$opt_aghbase"
+    printf '<body>'
+  fi
+
+  php "$LWIKIPATH/lwiki-convert" "$file"
+
+  if [[ $opt_header ]]; then
+    echo '</body></html>'
+  fi
 }
 
 function command.view {

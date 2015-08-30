@@ -1079,11 +1079,11 @@ lwiki_language::$defaultInstance->register_pattern(
     case 'color':
       if(($args=lwc_read_args($content,$i))){
         $style='';
-        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',$args[0]))
+        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',@$args[0]))
           $style.='color:'.trim($args[0]).';';
-        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',$args[1]))
+        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',@$args[1]))
           $style.='background-color:'.trim($args[1]).';';
-        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',$args[2]))
+        if(preg_match('/^\s*'.lwc_util::$rex_cssColor.'\s*$/u',@$args[2]))
           $style.='border:1px solid '.trim($args[2]).';padding:1px;margin:0 1px;';
         if($style&&($wiki=lwc_read_brace($content,$i))!==false){
           $pos=$i;
