@@ -1,5 +1,8 @@
 <?php // -*- mode:php -*-
 
+const LWIKI_PHP_BEGIN_TAG="<\x3Fphp ";
+const LWIKI_PHP_END_TAG="\x3F>";
+
 function lwiki_hash($key,$salt='4fa52acaf207'){
   return substr(base64_encode(md5('salt+'.$salt.'+'.$key,true)),0,12);
 }
