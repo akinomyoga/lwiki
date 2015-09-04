@@ -40,8 +40,7 @@ function begin_document($title,$headContent=""){
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <title>$title</title>
-$headContent  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWIKI_URL_AGH}/mwg.slide.css" />
-  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWIKI_URL_AGH}/prog.std.css" />
+$headContent  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWIKI_URL_AGH}/prog.std.css" />
   <meta name="agh-fly-type" content="color,tex" />
   <script type="application/x-tex" id="tex-preamble">\documentclass{article}\usepackage{amsmath,amssymb,bm,color}\edef\lbrace{\{}\edef\rbrace{\}}</script>
   <script type="text/javascript" charset="utf-8" src="{$LWIKI_URL_AGH}/agh.fly.js"></script>

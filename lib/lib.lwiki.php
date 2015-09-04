@@ -1138,14 +1138,16 @@ lwiki_language::$defaultInstance->register_pattern(
       //   $isblock   = false ! 末尾の改行を削除するか?
 
       // (...) → $className: class 属性を読み取り
+      $contentHead='';
       $attributes='';
       $className='';
       if(($args=lwc_read_args($content,$i))){
         for($j=0,$jN=count($args);$j<$jN;$j++){
           $a=trim($args[$j]);
           if($name=='pre'&&preg_match('/^title=(.*)$/u',$a,$m)){
-            $className=($className?$className.' ':'').'agh-prog-titled';
-            $attributes.=' data-title="'.htmlspecialchars($m[1]).'"';
+            // $className=($className?$className.' ':'').'lwiki-titled';
+            // $attributes.=' data-lwiki-title="'.htmlspecialchars($m[1]).'"';
+            $contentHead='<div class="lwiki-pre-title">'.htmlspecialchars($m[1]).'</div>';
           }else if(preg_match('/^[\w\s_-]+$/u',$a))
             $className=$className?$className.' '.$a:$a;
         }
@@ -1166,7 +1168,7 @@ lwiki_language::$defaultInstance->register_pattern(
         }else
           $cont=htmlspecialchars($cont);
         $pos=$i;
-        return '<'.$name.$attributes.'>'.$cont.'</'.$name.'>';
+        return '<'.$name.$attributes.'>'.$contentHead.$cont.'</'.$name.'>';
       }
       break;
       //-----------------------------------
@@ -1445,7 +1447,7 @@ lwiki_language::$defaultInstance->register_pattern(
   function($conv,$letter,$content,&$pos){
     switch($letter){
     case "\\\n":return '';
-    case "\n":return '<br/>'.PHP_EOL;
+    case "\n":return '<br/>';
     case ' ':return '&#x20;';
     case "\t":return '&nbsp;&nbsp;&nbsp;&nbsp;';
     default:
