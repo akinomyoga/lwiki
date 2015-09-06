@@ -28,7 +28,7 @@
   }
 
   $pages=mwg_file_list('./.lwiki/data','/page..*\.htm$/');
-  echo '<table class="normal center">'.PHP_EOL;
+  echo '<table class="lwiki-single lwiki-center">'.PHP_EOL;
   echo '<tr><th>ページ名</th><th>編集者</th><th>最終更新日時</th></tr>';
   foreach($pages as $page){
     if(!preg_match('/page.(.*)\.htm$/',$page,$m))

@@ -246,8 +246,42 @@ kbd.lwiki-keyspec{
   kbd.lwiki-keyspec{font-family:lwiki_font_code,monospace;}
 }
 
-/*---- WIKI MENUS -----------------------------------------------------------*/
+/*---- WIKI UI --------------------------------------------------------------*/
 
+/* table */
+
+/* <mwg.slide.css 改変> */
+table.lwiki-single{
+  margin-left:2em;
+  border-collapse:collapse;
+  border:1px solid gray;
+}
+table.lwiki-single>*>tr>td,
+table.lwiki-single>*>tr>th{
+  border-color:inherit;
+  border-style:solid;
+  border-width:1px;
+  padding:.5ex;
+}
+  /* [IE6] */
+  * html table.lwiki-single td,
+  * html table.lwiki-single th{
+    -voice-family:expression(this.ie6tested==null&&(this.ie6tested=true)&&this.parentElement.parentElement.parentElement.className.match(/\bnormal\b/)&&(this.className +=" ie6normal"));
+  }
+  * html table.lwiki-single td.ie6normal,
+  * html table.lwiki-single th.ie6normal{
+    border-color:inherit;
+    border-style:solid;
+    border-width:1px;
+    padding:.5ex;
+    voice-family:child;
+  }
+table.lwiki-center{margin-right:auto!important;margin-left:auto!important;max-width:90%;}
+  /* [IE6] */
+  * html table.lwiki-center{-voice-family:expression(this.mwg3ie6center==null&&(this.mwg3ie6center=1)&&(this.align="center"));}
+/* </mwg.slide.css 改変> */
+
+/* menu */
 div.lwiki-menu-holder,
 div.lwiki-page-holder{background-color:white;}
 div.lwiki-page-holder{margin:0;}

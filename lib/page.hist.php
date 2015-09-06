@@ -24,7 +24,7 @@
     
     $fname_hist='.lwiki/data/page.'.$pageid.'.hist';
     if(file_exists($fname_hist)){
-      echo '<table class="normal center">'.PHP_EOL;
+      echo '<table class="lwiki-single lwiki-center">'.PHP_EOL;
       echo '<tr><th>版</th><th>更新日時</th><th>編集者</th><th>註</th><th>履歴容量</th></tr>';
       $html='';
       $lines=file($fname_hist);
