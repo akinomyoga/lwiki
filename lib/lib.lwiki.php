@@ -359,7 +359,7 @@ class lwiki_language{
     };
   }
   public function entity_handler($name){
-    return $this->entityHandlers[$name];
+    return @$this->entityHandlers[$name];
   }
 
   //-----------------------------------
