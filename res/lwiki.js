@@ -86,6 +86,20 @@
     
   }
 
+  function initialize_color(target){
+    var m;
+    if(!(m=(target.className||"").match(/(?:^|\s)lwiki-language-([^\s]+)(?:\s|$)/)))return;
+    var language=m[1];
+
+    var content=target.innerHTML;
+    var langs=language.split('/');
+    for(var j=0;j<langs.length;j++){
+      if(agh.Text.Color[langs[j]] instanceof Function)
+        content=agh.Text.Color(content,langs[j],"/html");
+    }
+    target.innerHTML=content;
+  }
+
   function lwikiModifyContent(target){
     if(!target)target=document;
     var pres=target.getElementsByTagName("pre");
@@ -95,6 +109,8 @@
         initialize_runjs(pre);
       else if((/(?:^|\s)lwiki-run-htm(?:\s|$)/).test(pre.className))
         initialize_runhtm(pre);
+
+      initialize_color(pre);
     }
 
     var divs=target.getElementsByTagName("div");
@@ -105,6 +121,10 @@
       else if((/(?:^|\s)lwiki-toggle-opened(?:\s|$)/).test(div.className))
         initialize_toggle(div,false);
     }
+
+    var codes=target.getElementsByTagName("code");
+    for(var i=0;i<codes.length;i++)
+      initialize_color(codes[i]);
   }
 
   //***************************************************************************
@@ -213,7 +233,7 @@
 
   //---------------------------------------------------------------------------
 
-  agh.scripts.wait(["event:onload","agh.dom.js"],function(){
+  agh.scripts.wait(["event:onload","agh.dom.js","agh.text.color.js"],function(){
     lwikiModifyContent(document);
     initialize_preview();
     initialize_comment_preview();

@@ -168,6 +168,41 @@ function command.archive {
   )
 }
 
+function command.page-convert {
+  if [[ ! -d .lwiki ]]; then
+    echo "lwiki.page-convert: this is not a lwiki directory" >&2
+    return 1
+  fi
+
+  local pageid
+  local fError=
+  local -a pageids
+  pageids=()
+  if (($#)); then
+    for pageid in "$@"; do
+      if [[ ! -f .lwiki/data/page.$pageid.wiki ]]; then
+        echo "lwiki.page-convert: the specified page, pageid=$pageid, is not found." >&2
+        fError=1
+        continue
+      fi
+      pageids+=("$pageid")
+    done
+  else
+    local page
+    for page in .lwiki/data/page.*.wiki; do
+      pageid="${page#.lwiki/data/page.}"
+      pageid="${pageid%.wiki}"
+      pageids+=("$pageid")
+    done
+  fi
+
+  [[ $fError ]] && return 1
+
+  for pageid in "${pageids[@]}"; do
+    echo "$pageid"
+    php "$LWIKIPATH"/lwiki-page-convert.php "$pageid"
+  done
+}
 
 if [[ ! $1 ]]; then
   echo "lwiki: operation not specified" >&2

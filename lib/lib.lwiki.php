@@ -350,7 +350,7 @@ class lwiki_language{
       if($hasb){
         if($hasb==='block')
           $cont=lwc_read_block($content,$i);
-        else 
+        else
           $cont=lwc_read_brace($content,$i);
         if($cont)$cont=trim($cont);
       }
@@ -533,6 +533,10 @@ class lwiki_converter{
       return $this->m_procGenerateEditLink($_pageid,$mark);
     else
       return "";
+  }
+
+  public function &language(){
+    return $this->lang;
   }
 }
 
@@ -795,7 +799,7 @@ class lwc_table{
 
   private function read_style_row(&$colstyles,$row){
     for($c=0;$c<$this->cols;){
-      // span 
+      // span
       $cN=$c+1;
       while($cN<$this->cols&&trim($row[$cN-1])==='>')$cN++;
 
@@ -1002,7 +1006,7 @@ lwiki_language::$defaultInstance->register_pattern(
         $ret.='<dd>'.$conv->convert($dd).'</dd>'.PHP_EOL;
         $dd='';
       }
-      
+
       $pos=$i;
       return $ret.'</dl>';
     case '>':
@@ -1011,7 +1015,7 @@ lwiki_language::$defaultInstance->register_pattern(
       if($head!=='> ')
         $cont=mb_substr($head,1).$cont;
       $pos=$i;
-      
+
       while(preg_match('/\G>+(?: |$)/mu',$content,$m,0,$i)){
         $i+=strlen($m[0]==='> '?$m[0]:mb_substr($m[0],0,1));
         $r=lwc_read_braced_line($content,$i);
@@ -1048,7 +1052,7 @@ lwiki_language::$defaultInstance->register_pattern(
           $i+=strlen($c);
         }
       }
-      
+
       // 失敗時
       $table->remove_row();
       return $table->html().'|';
@@ -1138,23 +1142,57 @@ lwiki_language::$defaultInstance->register_pattern(
       //   $isblock   = false ! 末尾の改行を削除するか?
 
       // (...) → $className: class 属性を読み取り
+      $isTitled=false;
+      $language='';
       $contentHead='';
       $attributes='';
       $className='';
       if(($args=lwc_read_args($content,$i))){
         for($j=0,$jN=count($args);$j<$jN;$j++){
           $a=trim($args[$j]);
-          if($name=='pre'&&preg_match('/^title=(.*)$/u',$a,$m)){
-            // $className=($className?$className.' ':'').'lwiki-titled';
-            // $attributes.=' data-lwiki-title="'.htmlspecialchars($m[1]).'"';
-            $contentHead='<div class="lwiki-pre-title">'.htmlspecialchars($m[1]).'</div>';
-          }else if(preg_match('/^[\w\s_-]+$/u',$a))
-            $className=$className?$className.' '.$a:$a;
+
+          // attribute=value
+          if(preg_match('/^([\w_-]+)=(.*)$/u',$a,$m)){
+            if($name=='pre'){
+              if($m[1]=='title'){
+                if($m[2]){
+                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($m[2]).'</div>';
+                  $className.=' lwiki-explicit-title';
+                }
+                $isTitled=true;
+              }
+            }
+            continue;
+          }
+
+          // !language if &pre,&code
+          if(preg_match('/^![-_\w\/]+$/u',$a)){
+            if($name==='pre'||$name==='code'){
+              $lang=substr($a,1);
+              $language=$language?$language.'/'.$lang:$lang;
+              continue;
+            }
+          }
+
+          if(preg_match('/^[-_\w\s]+$/u',$a))
+            $className.=' '.$a;
         }
-        // if(preg_match('/^[\w\s-_]+$/u',$args[0]))
-        //   $className=trim($args[0]);
       }
-      if($className)$attributes.=' class="'.htmlspecialchars($className).'"';
+
+      if($language){
+        $cls='lwiki-language-'.$language;
+        $className.=' '.$cls;
+
+        // &pre: determine title
+        if($name==='pre'&&!$isTitled){
+          $desc=$conv->language()->codeTitles[preg_replace('/.*\//u','',$language)];
+          if(!$desc)$desc=$language;
+          $className.=' lwiki-implicit-title';
+          $attributes.=' data-lwiki-title="'.htmlspecialchars($desc).'"';
+        }
+      }
+
+      if($className)$attributes.=' class="'.htmlspecialchars(substr($className,1)).'"';
 
       $cont=$isblock?lwc_read_block($content,$i):lwc_read_brace($content,$i);
       if($cont!==false){
@@ -1168,7 +1206,7 @@ lwiki_language::$defaultInstance->register_pattern(
         }else
           $cont=htmlspecialchars($cont);
         $pos=$i;
-        return '<'.$name.$attributes.'>'.$contentHead.$cont.'</'.$name.'>';
+        return $contentHead.'<'.$name.$attributes.'>'.$cont.'</'.$name.'>';
       }
       break;
       //-----------------------------------
@@ -1195,6 +1233,30 @@ lwiki_language::$defaultInstance->register_pattern(
 
     return htmlspecialchars('&'.$name);
   }
+);
+
+lwiki_language::$defaultInstance->codeTitles=array(
+  # from prog.std.css
+  'c'    => 'C Language',
+  'cpp'  => 'C++',
+  'cs'   => 'C#',
+  'x86'  => 'x86 Assembly',
+  'il'   => 'Common Inermediate Language',
+  'vb'   => 'Visual Basic',
+  'vbs'  => 'VBScript',
+  'bash' => 'Bash Script', # Bourne-Again Shell
+  'el'   => 'Emacs Lisp',
+  'html' => 'HTML',
+  'xml'  => 'XML',
+  'css'  => 'CSS',
+  'js'   => 'JavaScript (ECMAScript)',
+  'php'  => 'PHP (Hypertext Preprocessor)',
+  'txt'  => 'text/plain',
+
+  # added
+  'tex' => 'TeX',
+  'latex' => 'LaTeX',
+  'bash-interactive' => 'Bash Interactive'
 );
 
 lwiki_language::$defaultInstance->register_entity('img',true,true,function($name,$args,$cont,$conv,$content,&$i){
@@ -1333,7 +1395,7 @@ lwiki_language::$defaultInstance->register_pattern(
             $className='lwiki-external-mail';
           else if($m[1]=='ftp')
             $className='lwiki-external-ftp';
-          
+
           // 相対パス。現在の頁と同じ scheme に強制的に書き換えられる。(relative スキームなども作るべきか?)
           if(preg_match('/^(?:https?|ftp|file):(?!\/\/)/u',$link))
             $link=$m[2];
@@ -1361,7 +1423,7 @@ lwiki_language::$defaultInstance->register_pattern(
 
         if($hash!==false&&!$link)
           return '<a class="lwiki-internal-link" href="#'.htmlspecialchars($hash).'">'.$text.'</a>';
-        
+
         return \LWIKI_PHP_BEGIN_TAG.'echo \lwiki\page\generate_dynamic_link('
           .var_export($text,true).','
           .var_export($link,true).','
@@ -1392,7 +1454,7 @@ lwiki_language::$defaultInstance->register_entity('begin',true,true,function($na
   return false;
 });
 lwiki_language::$defaultInstance->register_pattern(
-  '((?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[a-zA-Z][\w_]*\b\*?\s?))',
+  '((?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[_a-zA-Z][-_\w]*\*?\s?))',
   function($conv,$spec,$content,&$pos){
     $spec2=mb_substr($spec,0,2);
     switch($spec2){
@@ -1414,7 +1476,7 @@ lwiki_language::$defaultInstance->register_pattern(
           $isverb=true;
 
         $term='\?\>';
-        $tag='code class="agh-prog-'.$lang.'"';
+        $tag='code class="lwiki-language-'.$lang.'"';
         $etag='code';
         break;
       }

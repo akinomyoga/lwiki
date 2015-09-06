@@ -210,18 +210,27 @@ nobr{white-space:nowrap;} /* Extended for jslib */
    from prog.std.css
 -----------------------------------------------------------------------------*/
 
-pre.lwiki-titled{
-  border:1px solid silver;border-width:1px 0px;padding-top:0px;padding-bottom:1ex;background-color:white;
-}
-div.lwiki-pre-title,
-pre.lwiki-titled:before{
-  display:block;margin:0px;margin-bottom:.5ex;
-  background-color:gray;color:white;
-}
-div.lwiki-pre-title{padding:1px 3px;}
-pre.lwiki-titled:before{padding:0px 3px;font-size:small;}
-pre.lwiki-titled:before{content:"<No Title>";}
-pre.lwiki-titled[data-lwiki-title]:before{content:attr(data-lwiki-title);}
+pre.lwiki-explicit-title,
+pre.lwiki-implicit-title{
+  margin-left:1ex;margin-right:1ex;
+  border:1px solid silver;border-width:1px 0px;padding-top:0px;
+  padding-bottom:1ex;background-color:white;}
+div.lwiki-explicit-title,
+pre.lwiki-implicit-title:before{
+  display:block;padding:0px 3px;margin:0px;margin-bottom:.5ex;
+  font-family:monospace;background-color:gray;color:white;}
+
+pre.lwiki-implicit-title:before{
+  font-size:small;
+  content:"<No Title>";}
+pre.lwiki-implicit-title[data-lwiki-title]:before{content:attr(data-lwiki-title);}
+
+div.lwiki-explicit-title{
+  margin-left:1ex;margin-right:1ex;margin-top:0;
+  border:1px solid silver;border-width:1px 0px 0px 0px;}
+pre.lwiki-explicit-title{
+  margin-top:0;border-top:1px;
+  border-width:0px 0px 1px 0px;}
 
 code{font-family:monospace;}
 @media print{
