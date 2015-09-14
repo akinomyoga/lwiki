@@ -218,15 +218,13 @@ pre.lwiki-implicit-title{
 div.lwiki-explicit-title,
 pre.lwiki-implicit-title:before{
   display:block;padding:0px 3px;margin:0px;margin-bottom:.5ex;
-  font-family:monospace;background-color:gray;color:white;}
+  background-color:gray;color:white;font-family:monospace;font-size:small;}
 
-pre.lwiki-implicit-title:before{
-  font-size:small;
-  content:"<No Title>";}
+pre.lwiki-implicit-title:before{content:"<No Title>";}
 pre.lwiki-implicit-title[data-lwiki-title]:before{content:attr(data-lwiki-title);}
 
 div.lwiki-explicit-title{
-  margin-left:1ex;margin-right:1ex;margin-top:0;
+  margin-left:1ex;margin-right:1ex;margin-top:1ex;
   border:1px solid silver;border-width:1px 0px 0px 0px;}
 pre.lwiki-explicit-title{
   margin-top:0;border-top:1px;
