@@ -1118,6 +1118,7 @@ lwiki_language::$defaultInstance->register_pattern(
       }
       break;
       //-----------------------------------
+    case 'kbd':
     case 'code':
     case 'pre':
       // * → $toconvert: 中身を変換するかどうか
