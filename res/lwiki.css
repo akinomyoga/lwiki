@@ -547,3 +547,10 @@ span.lwiki-diff-removed{background-color:#fbb;}
 span.lwiki-diff-added{background-color:#aea;}
 span.lwiki-diff-removed-lines{display:inline-block;width:100%;background-color:#fee;}
 span.lwiki-diff-added-lines  {display:inline-block;width:100%;background-color:#efe;}
+
+/*----- mod:lwiki-prog ------------------------------------------------------*/
+img.lwiki-prog-item{vertical-align:top;}
+span.lwiki-prog-param-attribute{
+  background-color:gray;color:white;
+  padding:0px 3px;line-height:1em;margin-right:2px;
+  font-size:80%;font-weight:bold;}

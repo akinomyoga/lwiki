@@ -54,17 +54,17 @@ function convert {
   local file=
   local opt_error=
   local opt_header=
-  # local opt_aghbase=http://tkynt2.phys.s.u-tokyo.ac.jp/~murase/agh
+  local opt_lwikibase=${LWIKI_BASE:-/~murase/wiki}
   local opt_aghbase=/~murase/agh
-  local opt_lwikibase=/~murase/wiki
   local opt_title=
   while (($#)); do
     local arg="$1"
     shift
     case "$arg" in
     (--header) opt_header=1 ;;
-    (--aghbase=*) opt_aghbase=${arg#*=} ;;
-    (--title=*)   opt_title=${arg#*=} ;;
+    (--lwiki-base=*) opt_lwikibase=${arg#*=} ;;
+    (--agh-base=*)   opt_aghbase=${arg#*=} ;;
+    (--title=*)      opt_title=${arg#*=} ;;
     (-*)
       opt_error=1
       echo "${0##*/} (arg $arg): an unrecognized option." >&2 ;;
@@ -107,7 +107,7 @@ function convert {
     printf '<div class="lwiki-page-content">'
   fi
 
-  php "$LWIKIPATH/lwiki-convert" "$file"
+  LWIKI_BASE="$opt_lwikibase" php "$LWIKIPATH/lwiki-convert" "$file"
 
   if [[ $opt_header ]]; then
     printf '</div></div></body></html>'
@@ -128,7 +128,6 @@ function command.view {
 function command.convert {
   convert "$@"
 }
-
 
 function command.init {
   local base=$(cd -P $LWIKIPATH; echo -n $PWD)

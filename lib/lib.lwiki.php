@@ -4,6 +4,14 @@
 // version 3.0
 //
 
+# 使用する外部変数
+#
+# @var $pageid
+#
+# @var $lwiki_base_resourceDirectoryUrl
+#   現在は @... 拡張で使っているだけである。
+#
+
 namespace lwiki\convert;
 
 //-----------------------------------------------------------------------------
@@ -43,11 +51,11 @@ function lwc_skip_single_nl($content,&$i){
   if(substr($content,$i,1)==="\n")$i++;
 }
 
-function lwc_read_args($content,&$i){
+function lwc_read_args($content,&$i,$cbeg='(',$cend=')'){
   lwc_skip_space($content,$i);
 
   $c=lwc_char_after($content,$i);
-  if($c!='(')return false;
+  if($c!=$cbeg)return false;
   $i+=strlen($c);
 
   $args=array();
@@ -57,10 +65,10 @@ function lwc_read_args($content,&$i){
     $c=lwc_char_after($content,$i);
     $i+=strlen($c);
 
-    if($c==','||$c==')'){
+    if($c==','||$c==$cend){
       $args[$iarg++]=$a;
       $a='';
-      if($c==')')return $args;
+      if($c==$cend)return $args;
     }else
       $a.=$c;
   }
@@ -388,7 +396,8 @@ class lwiki_converter{
   private $npat;
 
   public $flagInline=false;
-
+ 
+  public $option_prog_enabled=false;
   public $pageid;
   public function __construct($lang){
     $this->lang=$lang;
@@ -398,6 +407,7 @@ class lwiki_converter{
 
     global $pageid;
     $this->pageid=$pageid;
+    $this->option_prog_enabled=htmlspecialchars(getenv("LWIKI_ENABLE_PROG"));
   }
 
   private function _convertImpl($content){
@@ -1504,6 +1514,47 @@ lwiki_language::$defaultInstance->register_pattern(
 
 // ここまで: Ageha JavaScript Library 依存
 //-----------------------------------------------------------------------------
+
+lwiki_language::$defaultInstance->register_pattern(
+  '^@([a-z]+)\b',
+  function($conv,$spec,$content,&$pos){
+    if($conv->option_prog_enabled){
+      global $lwiki_base_resourceDirectoryUrl;
+
+      $icon='';
+      switch($spec){
+      case 'fn':
+        $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-meth.png" /> ';
+        break;
+      case 'param':
+        $icon='<img class="lwiki-prog-item" alt="@param" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-param.png" />';
+        if(($args=lwc_read_args($content,$pos,'[',']'))){
+          for($j=0,$jN=count($args);$j<$jN;$j++){
+            $icon.='<span class="lwiki-prog-param-attribute">'.htmlspecialchars($args[$j]).'</span>';
+          }
+        }
+        $icon.=' ';
+        break;
+      case 'class':
+        $icon='<img class="lwiki-prog-item" alt="@class" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-class.png" /> ';
+        break;
+      }
+
+      if($icon){
+        if(false!==($cont=lwc_read_until('(?=[\r\n])|$',$content,$pos))){
+          $cont=trim($cont);
+          if($cont!=''){
+            $cont=$conv->iconvert($cont);
+            return $icon.'<code class="lwiki-language-'.$conv->option_prog_enabled.'">'.$cont.'</code>';
+          }
+        }
+      }
+    }
+
+    return '@'.htmlspecialchars($spec);
+  }
+);
+
 
 lwiki_language::$defaultInstance->register_pattern(
   '(  +|[&<>\n\t]|\\\\\n)',

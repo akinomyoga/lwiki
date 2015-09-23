@@ -1,5 +1,14 @@
 <?php // -*- mode:php -*-
 
+# environmental variables
+#
+# @var LWIKI_BASE
+#   html から lwiki directory を参照する url を指定します。
+#
+# @var LWIKI_ENABLE_PROG
+#   言語名を指定します。prog 拡張を有効にします。
+#
+
 const LWIKI_PHP_BEGIN_TAG="<\x3Fphp ";
 const LWIKI_PHP_END_TAG="\x3F>";
 
@@ -8,6 +17,11 @@ function lwiki_hash($key,$salt='4fa52acaf207'){
 }
 
 require_once dirname(__FILE__).'/lib/lib.lwiki.php';
+
+# _lwiki_base
+$_lwiki_base=getenv("LWIKI_BASE");
+if(!$_lwiki_base)$_lwiki_base='file://'.dirname(__FILE__);
+$lwiki_base_resourceDirectoryUrl=$_lwiki_base.'/res';
 
 if($argv[1]==NULL)
   $fname='php://stdin';
