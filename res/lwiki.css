@@ -236,10 +236,10 @@ code{font-family:monospace;}
 }
 
 kbd.lwiki-keyspec{
-  padding:.5ex;border:2px white groove;background-color:#ddd;
+  padding:1px 0.5ex;border:1px outset white;background-color:#ddd;
   display:inline-block;text-indent:0;line-height:1em;
-  font-weight:bold;font-family:monospace;
-}
+  font-weight:normal;font-family:monospace;
+  text-shadow:1px 1px 0 white}
 @media print{
   kbd.lwiki-keyspec{font-family:lwiki_font_code,monospace;}
 }
@@ -415,40 +415,24 @@ th.lwiki-table-cell,
 td.lwiki-table-cell{padding:2px;border:1px solid #aaa;}
 th.lwiki-table-cell{background-color:#555;color:white;}
 
-/* OBSOLETE */
-div.lwiki-page-content>h1,div.lwiki-page-content>h2,
-div.lwiki-page-content>h3,div.lwiki-page-content>h4,
-div.lwiki-page-content>h5,div.lwiki-page-content>h6{margin:1ex 0;}
-p.lwiki-uli1,p.lwiki-oli1,
-p.lwiki-uli2,p.lwiki-oli2,
-p.lwiki-uli3,p.lwiki-oli3,
-p.lwiki-uli4,p.lwiki-oli4{margin:0;display:list-item;}
-p.lwiki-uli1{margin-left:2em;list-style-type:disc;}
-p.lwiki-uli2{margin-left:3em;list-style-type:circle;}
-p.lwiki-uli3{margin-left:4em;list-style-type:square;}
-p.lwiki-uli4{margin-left:5em;list-style-type:disc;}
-p.lwiki-oli1{margin-left:2em;list-style-type:decimal;}
-p.lwiki-oli2{margin-left:3em;list-style-type:lower-roman;}
-p.lwiki-oli3{margin-left:4em;list-style-type:lower-alpha;}
-p.lwiki-oli4{margin-left:5em;list-style-type:decimal;}
 /*
-p.lwiki-li1,
-p.lwiki-li2,
-p.lwiki-li3,
-p.lwiki-li4{margin:2px;padding-left:10px;}
-p.lwiki-li1:before,
-p.lwiki-li2:before,
-p.lwiki-li3:before,
-p.lwiki-li4:before{font-size:50%;vertical-align:0.2em;padding-right:0.5em;}
-
-p.lwiki-li1{padding-left:2em;}
-p.lwiki-li2{padding-left:4em;}
-p.lwiki-li3{padding-left:6em;}
-p.lwiki-li4{padding-left:8em;}
-p.lwiki-li1:before{content:"●";}
-p.lwiki-li2:before{content:"○";}
-p.lwiki-li3:before{content:"◆";}
-p.lwiki-li4:before{content:"◇";}
+<OBSOLETE>
+  div.lwiki-page-content>h1,div.lwiki-page-content>h2,
+  div.lwiki-page-content>h3,div.lwiki-page-content>h4,
+  div.lwiki-page-content>h5,div.lwiki-page-content>h6{margin:1ex 0;}
+  p.lwiki-uli1,p.lwiki-oli1,
+  p.lwiki-uli2,p.lwiki-oli2,
+  p.lwiki-uli3,p.lwiki-oli3,
+  p.lwiki-uli4,p.lwiki-oli4{margin:0;display:list-item;}
+  p.lwiki-uli1{margin-left:2em;list-style-type:disc;}
+  p.lwiki-uli2{margin-left:3em;list-style-type:circle;}
+  p.lwiki-uli3{margin-left:4em;list-style-type:square;}
+  p.lwiki-uli4{margin-left:5em;list-style-type:disc;}
+  p.lwiki-oli1{margin-left:2em;list-style-type:decimal;}
+  p.lwiki-oli2{margin-left:3em;list-style-type:lower-roman;}
+  p.lwiki-oli3{margin-left:4em;list-style-type:lower-alpha;}
+  p.lwiki-oli4{margin-left:5em;list-style-type:decimal;}
+</OBSOLETE>
 */
 
 /*---- MENU -----------------------------------------------------------------*/
