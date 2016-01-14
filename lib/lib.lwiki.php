@@ -1158,19 +1158,35 @@ lwiki_language::$defaultInstance->register_pattern(
       $contentHead='';
       $attributes='';
       $className='';
+      $styles='';
       if(($args=lwc_read_args($content,$i))){
         for($j=0,$jN=count($args);$j<$jN;$j++){
           $a=trim($args[$j]);
 
           // attribute=value
           if(preg_match('/^([\w_-]+)=(.*)$/u',$a,$m)){
+            $prop=$m[1];
+            $value=$m[2];
             if($name=='pre'){
-              if($m[1]=='title'){
-                if($m[2]){
-                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($m[2]).'</div>';
+              if($prop==='title'){
+                if($value){
+                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($value).'</div>';
                   $className.=' lwiki-explicit-title';
                 }
                 $isTitled=true;
+              }
+            }else if($name==='div'){
+              if($prop==='color'){
+                $colors=explode(':',$value);
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[0]))
+                  $styles.='color:'.$colors[0].';';
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[1]))
+                  $styles.='background-color:'.$colors[1].';';
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[2]))
+                  $styles.='border:1px solid '.$colors[2].';';
+              }else if($prop==='padding'){
+                if(preg_match('/^\s*'.lwc_util::$rex_cssLength.'(?:\s+'.lwc_util::$rex_cssLength.')*\s*$/u',$value))
+                  $styles.='padding:'.$value.';';
               }
             }
             continue;
@@ -1204,6 +1220,7 @@ lwiki_language::$defaultInstance->register_pattern(
       }
 
       if($className)$attributes.=' class="'.htmlspecialchars(substr($className,1)).'"';
+      if($styles)$attributes.=' style="'.$styles.'"';
 
       $cont=$isblock?lwc_read_block($content,$i):lwc_read_brace($content,$i);
       if($cont!==false){
