@@ -764,7 +764,7 @@ class lwc_table{
   private function initialize_cell_style(){
     $style_color='^((?:bg)?color)\(\s*('.lwc_util::$rex_cssColor.')\s*\):'; // $2 $3
     $style_size='^size\(\s*('.lwc_util::$rex_cssFontSize.')\s*\):';         // $4
-    $style_width='^(width|height)\(\s*('.lwc_util::$rex_cssLength.')\s*\):'; // $5 $6
+    $style_width='^(width|height|padding)\(\s*('.lwc_util::$rex_cssLength.')\s*\):'; // $5 $6
     $this->rex_cell_style='/^!|^(left|right|center|top|bottom|middle):|'.$style_color.'|'.$style_size.'|'.$style_width.'/iu';
 
     $this->cell_style_props=array(
@@ -774,7 +774,8 @@ class lwc_table{
       'bgcolor' => 'background-color',
       'size' => 'font-size',
       'width' => 'width',
-      'height' => 'height');
+      'height' => 'height',
+      'padding' => 'padding');
   }
   private function read_cell_style(&$tag,&$style,&$cont){
     while(preg_match($this->rex_cell_style,$cont,$m)){
@@ -793,11 +794,10 @@ class lwc_table{
         if(preg_match('/^[\-.\d]+$/',$size))$size.='px';
         $style['size']=$size;
       }else if($m[5]){
+        // width height padding
+        $attr=strtolower($m[5]);
         $len=lwc_util::add_unit_to_csslength($m[6]);
-        if(strtolower($m[5])==='width')
-          $style['width']=$len;
-        else
-          $style['height']=$len;
+        $style[$attr]=$len;
       }else{
         // !
         $tag='th';
@@ -1158,19 +1158,35 @@ lwiki_language::$defaultInstance->register_pattern(
       $contentHead='';
       $attributes='';
       $className='';
+      $styles='';
       if(($args=lwc_read_args($content,$i))){
         for($j=0,$jN=count($args);$j<$jN;$j++){
           $a=trim($args[$j]);
 
           // attribute=value
           if(preg_match('/^([\w_-]+)=(.*)$/u',$a,$m)){
+            $prop=$m[1];
+            $value=$m[2];
             if($name=='pre'){
-              if($m[1]=='title'){
-                if($m[2]){
-                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($m[2]).'</div>';
+              if($prop==='title'){
+                if($value){
+                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($value).'</div>';
                   $className.=' lwiki-explicit-title';
                 }
                 $isTitled=true;
+              }
+            }else if($name==='div'){
+              if($prop==='color'){
+                $colors=explode(':',$value);
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[0]))
+                  $styles.='color:'.$colors[0].';';
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[1]))
+                  $styles.='background-color:'.$colors[1].';';
+                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[2]))
+                  $styles.='border:1px solid '.$colors[2].';';
+              }else if($prop==='padding'){
+                if(preg_match('/^\s*'.lwc_util::$rex_cssLength.'(?:\s+'.lwc_util::$rex_cssLength.')*\s*$/u',$value))
+                  $styles.='padding:'.$value.';';
               }
             }
             continue;
@@ -1204,6 +1220,7 @@ lwiki_language::$defaultInstance->register_pattern(
       }
 
       if($className)$attributes.=' class="'.htmlspecialchars(substr($className,1)).'"';
+      if($styles)$attributes.=' style="'.$styles.'"';
 
       $cont=$isblock?lwc_read_block($content,$i):lwc_read_brace($content,$i);
       if($cont!==false){
