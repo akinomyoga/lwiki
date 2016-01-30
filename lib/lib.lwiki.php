@@ -1516,6 +1516,18 @@ lwiki_language::$defaultInstance->register_pattern(
 //-----------------------------------------------------------------------------
 
 lwiki_language::$defaultInstance->register_pattern(
+  '(\`)',
+  function($conv,$spec,$content,&$pos){
+    if($conv->option_prog_enabled){
+      if(false!==($cont=lwc_read_until('\`',$content,$pos))){
+        $cont=htmlspecialchars($cont);
+        return '<code class="lwiki-language-'.$conv->option_prog_enabled.'">'.$cont.'</code>';
+      }
+    }
+    return htmlspecialchars($spec);
+  }
+);
+lwiki_language::$defaultInstance->register_pattern(
   '^@([a-z]+)\b',
   function($conv,$spec,$content,&$pos){
     if($conv->option_prog_enabled){
