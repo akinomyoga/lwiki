@@ -120,17 +120,17 @@
 <div class="lwiki-history-source">
 <pre class="agh-prog-txt"><?php echo $hist_diff;?></pre>
 </div><!-- end of lwiki-history-source -->
+<h1><?php echo $ht_page_title;?></h1>
+<?php lwiki_include_string($hist2_html);?>
+</div><!-- end of lwiki-page-content -->
 <?php
   $hist2_diff=$_hist->get_fields($h2)[2];
   if(substr($hist2_diff,0,1)==='!'){
     echo '<h2>履歴データ (差分)</h2>'.PHP_EOL;
     $hist2_diff=htmlspecialchars(urldecode(substr($hist2_diff,1)));
-    echo '<pre class="agh-prog-sed agh-prog-titled" data-title="sed">'.$hist2_diff.'</pre>';
+    echo '<pre class="lwiki-language-sed lwiki-implicit-title" data-lwiki-title="sed">'.$hist2_diff.'</pre>';
   }
 ?>
-<h1><?php echo $ht_page_title;?></h1>
-<?php lwiki_include_string($hist2_html);?>
-</div><!-- end of lwiki-page-content -->
 <?php
   lwiki\page\end_document();
 ?>
