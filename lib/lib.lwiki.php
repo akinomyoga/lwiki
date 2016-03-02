@@ -222,6 +222,7 @@ function lwc_read_braced_line($content,&$pos){
   $needle='\n|$';
 
   // option: 行末の \ による行接続を有効にするかどうか。
+  //   \ に続く行頭のスペースは削除する (2016-03-02)
   $hasEscape=true;
 
   // option: 全体を囲む {} を削除するかしないか?
@@ -240,6 +241,8 @@ function lwc_read_braced_line($content,&$pos){
 
     if($hasEscape&&mb_substr($ret,-1)=="\\"){
       $ret=mb_substr($ret,0,-1);
+      if(preg_match('/\G\s+/u',$content,$m,0,$pos))
+        $pos+=strlen($m[0]);
       continue;
     }
 
