@@ -129,6 +129,15 @@ function command.convert {
   convert "$@"
 }
 
+#------------------------------------------------------------------------------
+
+function check-lwiki-directory {
+  if [[ ! -d .lwiki ]]; then
+    echo "lwiki: this is not a lwiki directory" >&2
+    return 1
+  fi
+}
+
 function command.init {
   local base=$(cd -P $LWIKIPATH; echo -n $PWD)
 
@@ -169,10 +178,7 @@ function command.init {
 }
 
 function command.archive {
-  if [[ ! -d .lwiki ]]; then
-    echo "lwiki-save: this is not a lwiki directory." >&2
-    return 1
-  fi
+  check-lwiki-directory || return 1
 
   (
     cd .lwiki/data
@@ -181,10 +187,7 @@ function command.archive {
 }
 
 function command.page-convert {
-  if [[ ! -d .lwiki ]]; then
-    echo "lwiki.page-convert: this is not a lwiki directory" >&2
-    return 1
-  fi
+  check-lwiki-directory || return 1
 
   local pageid
   local fError=
@@ -213,6 +216,17 @@ function command.page-convert {
   for pageid in "${pageids[@]}"; do
     echo "$pageid"
     php "$LWIKIPATH"/lwiki-page-convert.php "$pageid"
+  done
+}
+
+function command.ls {
+  check-lwiki-directory || return 1
+
+  local page
+  for page in .lwiki/data/page.*.wiki; do
+    pageid="${page#.lwiki/data/page.}"
+    pageid="${pageid%.wiki}"
+    echo "$pageid"
   done
 }
 
