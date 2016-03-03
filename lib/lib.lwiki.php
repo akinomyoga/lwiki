@@ -1555,14 +1555,10 @@ lwiki_language::$defaultInstance->register_pattern(
 
       $icon='';
       switch($spec){
-      case 'fn':
-        $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-meth.png" /> ';
-        break;
-      case 'op':
-        $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-oper.png" /> ';break;
-      case 'namespace':
-        $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-ns.png" /> ';
-        break;
+      case 'fn':       $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-meth.png" /> ';break;
+      case 'op':       $icon='<img class="lwiki-prog-item" alt="@op" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-oper.png" /> ';break;
+      case 'var':      $icon='<img class="lwiki-prog-item" alt="@var" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-field.png" /> ';break;
+      case 'namespace':$icon='<img class="lwiki-prog-item" alt="@namespace" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-ns.png" /> ';break;
       case 'param':
         $icon='<img class="lwiki-prog-item" alt="@param" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-param.png" />';
         if(($args=lwc_read_args($content,$pos,'[',']'))){
