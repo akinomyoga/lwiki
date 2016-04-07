@@ -536,5 +536,5 @@ span.lwiki-diff-added-lines  {display:inline-block;width:100%;background-color:#
 img.lwiki-prog-item{vertical-align:top;}
 span.lwiki-prog-param-attribute{
   background-color:gray;color:white;
-  padding:0px 3px;line-height:1em;margin-right:2px;
+  padding:0px 3px;line-height:1em;margin:0px 2px;
   font-size:80%;font-weight:bold;}

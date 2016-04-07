@@ -1547,30 +1547,49 @@ lwiki_language::$defaultInstance->register_pattern(
     return htmlspecialchars($spec);
   }
 );
+
+lwiki_language::$defaultInstance->progItemIcons=array(
+  'namespace' => 'prog-ns.png',
+
+  'class' => 'prog-class.png',
+  'struct' => 'prog-class.png',
+  'enum' => 'prog-struct.png',
+  'union' => 'prog-struct.png',
+  'interface' => 'prog-iface.png',
+
+  'typedef' => 'prog-type.png',
+  'def' => 'prog-const.png',
+  'const' => 'prog-const.png',
+  'fn' => 'prog-meth.png',
+  'op' => 'prog-oper.png',
+  'var' => 'prog-field.png',
+
+  'param' => 'prog-param.png',
+  'tparam' => 'prog-type.png'
+);
+
 lwiki_language::$defaultInstance->register_pattern(
   '^@([a-z]+)\b',
   function($conv,$spec,$content,&$pos){
     if($conv->option_prog_enabled){
       global $lwiki_base_resourceDirectoryUrl;
-
       $icon='';
-      switch($spec){
-      case 'fn':       $icon='<img class="lwiki-prog-item" alt="@fn" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-meth.png" /> ';break;
-      case 'op':       $icon='<img class="lwiki-prog-item" alt="@op" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-oper.png" /> ';break;
-      case 'var':      $icon='<img class="lwiki-prog-item" alt="@var" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-field.png" /> ';break;
-      case 'namespace':$icon='<img class="lwiki-prog-item" alt="@namespace" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-ns.png" /> ';break;
-      case 'param':
-        $icon='<img class="lwiki-prog-item" alt="@param" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-param.png" />';
+
+      $iconName=$conv->language()->progItemIcons[$spec];
+      if($iconName){
+        $icon='<img class="lwiki-prog-item" alt="@'.$spec.'" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/'.$iconName.'" />';
         if(($args=lwc_read_args($content,$pos,'[',']'))){
           for($j=0,$jN=count($args);$j<$jN;$j++){
             $icon.='<span class="lwiki-prog-param-attribute">'.htmlspecialchars($args[$j]).'</span>';
           }
         }
         $icon.=' ';
-        break;
-      case 'class':
-        $icon='<img class="lwiki-prog-item" alt="@class" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/prog-class.png" /> ';
-        break;
+      }else{
+        switch($spec){
+        case 'include':
+          $icon='<img class="lwiki-prog-item" alt="@'.$spec.'" src="'.$lwiki_base_resourceDirectoryUrl.'/icons/file-h.png" />';
+          break;
+        }
       }
 
       if($icon){
