@@ -171,10 +171,24 @@ function command.init {
   ln -s "$base/index.php" index.php
   sed "s/%authhash%/$authhash/" "$base/lwiki_config.php" > lwiki_config.php
 
-  echo "lwiki-init: changing owner group of .lwiki/data and .lwiki/lock to \`apache'..."
-  chmod 775 .lwiki/data .lwiki/lock
-  sudo chown :apache .lwiki/data .lwiki/lock
-  sudo chcon -R -t httpd_sys_rw_content_t .lwiki/lock .lwiki/data
+  echo "lwiki-init: add access permission of .lwiki/data and .lwiki/lock to the user \`apache'..."
+  if type setfacl &>/dev/null; then
+    chmod 755 .lwiki/data .lwiki/lock
+    setfacl -m u:apache:rwx .lwiki/data .lwiki/lock
+  else
+    echo "lwiki: command \`setfacl' is not found. Instead, change group of the file to \`apache'." >&2
+    chmod 775 .lwiki/data .lwiki/lock
+    echo "lwiki$ sudo chown :apache .lwiki/data .lwiki/lock" >&2
+    sudo chown :apache .lwiki/data .lwiki/lock
+  fi
+
+  local is_selinux_enabled=
+  [[ $(getenforce) == Enforcing ]] && is_selinux_enabled=1
+  if [[ $is_selinux_enabled ]]; then
+    echo "lwiki$ sudo chcon -R -t httpd_sys_rw_content_t .lwiki/lock .lwiki/data" >&2
+    sudo chcon -R -t httpd_sys_rw_content_t .lwiki/lock .lwiki/data
+  fi
+
   echo "lwiki-init: done"
 }
 
