@@ -25,6 +25,35 @@ function lwiki_canonicalize_linebreaks($text){
 //---------------------------------------------------------------------------
 // 認証
 
+function lwiki_auth_securimage_check(&$errorMessage){
+  $scode=$_POST['lwiki_simi'];
+  if(!$scode||$scode==''){
+    $errorMessage='画像認証コードが入力されていません。';
+    return 2;
+  }
+
+  require_once 'securimage.php';
+  $simg=new Securimage();
+  if($simg->check($scode)!==true){
+    $errorMessage='画像認証に失敗。';
+    return 1;
+  }
+}
+
+function lwiki_auth_securimage_generate(){
+  require_once 'securimage.php';
+  $opts=array(
+    'securimage_path' => '/~murase/php/',
+    'image_id' => 'lwiki_simg',
+    'image_alt_text' => 'letters',
+    'input_id' => 'lwiki_simi',
+    'show_audio_button' => false,
+    'refresh_alt_text' => '別画像',
+    'refresh_title_text' => '別画像',
+    'input_text' => '上の文字:');
+  return '<div class="securimage-captcha">'.Securimage::getCaptchaHtml($opts).'</div>';
+}
+
 require_once 'lwiki_config.php';
 
 //---------------------------------------------------------------------------
