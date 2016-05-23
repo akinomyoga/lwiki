@@ -54,6 +54,15 @@ function lwiki_auth_securimage_generate(){
   return '<div class="securimage-captcha">'.Securimage::getCaptchaHtml($opts).'</div>';
 }
 
+$lwiki_config_timezone=new DateTimeZone('Asia/Tokyo');
+function lwiki_datetime($utime){
+  // http://qiita.com/Popphron/items/19c5bc6646db99bd3acb
+  global $lwiki_config_timezone;
+  $time = new DateTime();
+  if($utime!==null)$time->setTimestamp($utime);
+  return $time->setTimezone($lwiki_config_timezone)->format('Y-m-d H:i:s T');
+}
+
 require_once 'lwiki_config.php';
 
 //---------------------------------------------------------------------------
@@ -84,7 +93,7 @@ function page_modified_date(){
     $date=$f[1];
   }else{
     $ipaddr='';
-    $date=@date('Y-m-d H:i:s T',@filemtime('.lwiki/data/page.'.$pageid.'.htm'));
+    $date=@lwiki_datetime(@filemtime('.lwiki/data/page.'.$pageid.'.htm'));
   }
 
   $line=$date;

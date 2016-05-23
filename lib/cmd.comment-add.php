@@ -72,7 +72,7 @@ function comment_add(){
 
   $name=htmlspecialchars($name);
   $ipaddr=$_SERVER["REMOTE_ADDR"];
-  $date=@date('Y-m-d H:i:s T');
+  $date=@lwiki_datetime();
   $count=$flock->file_increment("./.lwiki/data/$comment_id.count");
 
   $chklast=$ipaddr.'/'.urlencode($name).'/'.urlencode($body);

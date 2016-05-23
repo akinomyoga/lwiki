@@ -35,7 +35,7 @@
       continue;
     $page_id=$m[1];
     $page_name=urldecode($m[1]);
-    $page_date=@date('Y-m-d H:i:s T',filemtime('./.lwiki/data/'.$page));
+    $page_date=@lwiki_datetime(@filemtime('./.lwiki/data/'.$page));
 
     $htmlPageName=htmlspecialchars($page_name);
     $htmlPageDate=htmlspecialchars($page_date).' [<a href="index.php?id='.htmlspecialchars($page_id).'&hist=last">差分</a>]';
