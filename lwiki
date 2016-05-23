@@ -175,6 +175,8 @@ function command.init {
   if type setfacl &>/dev/null; then
     chmod 755 .lwiki/data .lwiki/lock
     setfacl -m u:apache:rwx .lwiki/data .lwiki/lock
+    chmod 600 lwiki_config.php
+    setfacl -m u:apache:r lwiki_config.php
   else
     echo "lwiki: command \`setfacl' is not found. Instead, change group of the file to \`apache'." >&2
     chmod 775 .lwiki/data .lwiki/lock
