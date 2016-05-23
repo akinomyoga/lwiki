@@ -94,8 +94,10 @@
     var content=target.innerHTML;
     var langs=language.split('/');
     for(var j=0;j<langs.length;j++){
-      if(agh.Text.Color[langs[j]] instanceof Function)
-        content=agh.Text.Color(content,langs[j],"/html");
+      var lang = langs[j];
+      if(lang == 'iline') lang = '.iline';
+      if(agh.Text.Color[lang] instanceof Function)
+        content=agh.Text.Color(content,lang,"/html");
     }
     target.innerHTML=content;
   }

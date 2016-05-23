@@ -1158,6 +1158,7 @@ lwiki_language::$defaultInstance->register_pattern(
       // (...) → $className: class 属性を読み取り
       $isTitled=false;
       $language='';
+      $langdesc='';
       $contentHead='';
       $attributes='';
       $className='';
@@ -1199,7 +1200,11 @@ lwiki_language::$defaultInstance->register_pattern(
           if(preg_match('/^![-_\w\/]+$/u',$a)){
             if($name==='pre'||$name==='code'){
               $lang=substr($a,1);
+              $desc=$conv->language()->codeTitles[preg_replace('/.*\//u','',$lang)];
+              if(!$desc)$desc=$lang;
+
               $language=$language?$language.'/'.$lang:$lang;
+              $langdesc=$langdesc?$langdesc.' '.$desc:$desc;
               continue;
             }
           }
@@ -1215,10 +1220,8 @@ lwiki_language::$defaultInstance->register_pattern(
 
         // &pre: determine title
         if($name==='pre'&&!$isTitled){
-          $desc=$conv->language()->codeTitles[preg_replace('/.*\//u','',$language)];
-          if(!$desc)$desc=$language;
           $className.=' lwiki-implicit-title';
-          $attributes.=' data-lwiki-title="'.htmlspecialchars($desc).'"';
+          $attributes.=' data-lwiki-title="'.htmlspecialchars($langdesc).'"';
         }
       }
 
