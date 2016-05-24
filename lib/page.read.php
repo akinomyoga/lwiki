@@ -7,8 +7,9 @@
   <?php
     $fname_content='.lwiki/data/page.'.$pageid.'.htm';
     $url_edit=htmlspecialchars("index.php?id=$pageid&mode=edit");
+    $ht_nested=lwiki\page\generate_ancestor_links($page_title);
     echo
-      ' [ <b>'.$ht_page_title.'</b>'.
+      ' [ '.$ht_nested.
       ' | <a href="'.$url_edit.'">編集</a>'.
       ' | <a href="?id='.$pageid.'&amp;mode=hist">履歴</a> - <a href="?id='.$pageid.'&amp;hist=last">差分</a>]'.PHP_EOL;
   ?>

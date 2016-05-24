@@ -21,6 +21,34 @@ function generate_dynamic_link($html,$name,$hash){
   return '<a'.$classAttribute.' href="'.$link.'">'.$html.'</a>';
 }
 
+function generate_ancestor_links($pageTitle){
+  global $page_title;
+  if($pageTitle===null)$pageTitle=$page_title;
+
+  $elems=explode('/',$pageTitle);
+  $title='';
+  $name='';
+  $ht='';
+  for($i=0,$ilast=count($elems)-1;$i<$ilast;$i++){
+    $title.=$elems[$i];
+    $name.=$elems[$i];
+
+    $id=urlencode($title);
+    if(file_exists('.lwiki/data/page.'.$id.'.htm')){
+      $ht.='<a href="?id='.$id.'">'.htmlspecialchars($name).'</a><span class="lwiki-linkbar-separator">/</span>';
+      $name='';
+    }else{
+      $name.='/';
+    }
+
+    $title.='/';
+  }
+
+  $name.=$elems[$ilast];
+  $ht.='<b>'.htmlspecialchars($name).'</b>';
+  return $ht;
+}
+
 function begin_document($title,$headContent=""){
   global $lwiki_base_resourceDirectoryUrl;
   global $pageid;

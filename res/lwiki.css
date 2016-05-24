@@ -298,6 +298,7 @@ p.lwiki-linkbar-main,
 p.lwiki-linkbar-modified{margin:0.5em;}
 p.lwiki-linkbar-main{float:left;text-align:left;}
 p.lwiki-linkbar-modified{float:clear;text-align:right;}
+span.lwiki-linkbar-separator{margin:0 0.2em;}
 
 /* lwiki metalinks */
 p.lwiki-page-wikilinks a,
