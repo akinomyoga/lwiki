@@ -21,6 +21,13 @@ function lwiki_split_lines($text){
 function lwiki_canonicalize_linebreaks($text){
   return preg_replace('/[ \t　]*(?:\r?\n|\r)/u',"\n",$text);
 }
+function lwiki_util_getTail($haystack,$head){
+  $h = strlen($head);
+  if(substr($haystack,0,$h)===$head)
+    return substr($haystack,$h);
+  else
+    return false;
+}
 
 //---------------------------------------------------------------------------
 // 認証
@@ -54,6 +61,11 @@ function lwiki_auth_securimage_generate(){
   return '<div class="securimage-captcha">'.Securimage::getCaptchaHtml($opts).'</div>';
 }
 
+//---------------------------------------------------------------------------
+// config
+
+$lwiki_config_rewrite=false;
+
 $lwiki_config_timezone=new DateTimeZone('Asia/Tokyo');
 function lwiki_datetime($utime){
   // http://qiita.com/Popphron/items/19c5bc6646db99bd3acb
@@ -68,29 +80,63 @@ function lwiki_datetime($utime){
   return $time->format('Y-m-d H:i:s T');
 }
 
+$lwiki_config_commonHeadContent=<<<EOS
+EOS;
+
 require_once 'lwiki_config.php';
 
 //---------------------------------------------------------------------------
 
-$lwiki_base_php=$_SERVER['PHP_SELF'];
-// $lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$lwiki_base_php);
-// $lwiki_base_resourceDirectoryUrl=$lwiki_base_wikiDirectoryUrl.'/res';
-$lwiki_base_resourceDirectoryUrl=preg_replace('/index\.php$/','res',$lwiki_base_php);
+$lwiki_base_php=$_SERVER['SCRIPT_NAME'];
+$lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$lwiki_base_php);
+$lwiki_base_resourceDirectoryUrl=$lwiki_base_baseDirectoryUrl.'/res';
 
-$lwiki_page_commonHead=<<<EOS
-EOS;
+function lwiki_link_page($pageid=null,$get=null){
+  global $lwiki_config_rewrite;
+  if($lwiki_config_rewrite){
+    global $lwiki_base_baseDirectoryUrl;
+    $url=$lwiki_base_baseDirectoryUrl.'/';
+    if($pageid!==null)$url.=str_replace('%2F','/',$pageid);
+  }else{
+    global $lwiki_base_php;
+    $url=$lwiki_base_php;
+    if($pageid!==null)
+      $get='id='.$pageid.($get!==null?'&'.$get:'');
+  }
+
+  if($get!==null)$url=$url.'?'.$get;
+  return $url;
+}
 
 //---------------------------------------------------------------------------
 
-$page_title=@$_GET['id'];
-if($page_title==''){
-  $page_title=@file_get_contents(".lwiki/data/main");
-  if($page_title===false||$page_title=='')
-    $page_title=$lwiki_config_default_pageid;
+function lwiki_determine_pageid(){
+  global $page_title,$pageid;
+
+  # if accessed as http://example.com/wiki/index.php?id=title
+  $page_title=@$_GET['id'];
+  if($page_title!=''){
+    $pageid=urlencode($page_title);
+    return;
+  }
+
+  # if accessed as http://example.com/wiki/index.php/title
+  $pageid=lwiki_util_getTail($_SERVER['PHP_SELF'],$_SERVER['SCRIPT_NAME'].'/');
+  if($pageid!==false){
+    $page_title=urldecode($pageid);
+    return;
+  }
+
+  # if accessed as http://example.com/wiki/index.php
+  global $lwiki_config_default_pageid;
+  $page_title=$lwiki_config_default_pageid;
+  $pageid=urlencode($page_title);
 }
+
+lwiki_determine_pageid();
 $ht_page_title=htmlspecialchars($page_title);
-$pageid=urlencode($page_title);
 $pageinfo=@file('.lwiki/data/page.'.$pageid.'.info');
+
 function page_modified_date(){
   global $pageid,$pageinfo;
   if($pageinfo!==false){
@@ -124,7 +170,7 @@ case 'edit':
   if(!$page_updated){
     include ".lwiki/lib/page.edit.php";
   }else{
-    header("Location: $lwiki_base_php?id=$pageid"); // flush post data
+    header('Location: '.lwiki_link_page($pageid)); // flush post data
   }
   exit;
 case 'list':
@@ -161,7 +207,7 @@ default:
     if($comment_added){
       $comment_name=$_POST['name'];
       setcookie('comment-name',$comment_name);
-      header("Location: $lwiki_base_php?id=$pageid"); // flush post data
+      header('Location: '.lwiki_link_page($pageid)); // flush post data
       exit;
     }else{
       $comment_body=$_POST['body'];

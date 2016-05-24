@@ -8,15 +8,15 @@
 ?>
 <p class="lwiki-linkbar-main">
 <?php
-  $url_main=htmlspecialchars($lwiki_base_php);
-  $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
+  $url_main=htmlspecialchars(lwiki_link_page());
+  $url_list=htmlspecialchars(lwiki_link_page(null,'mode=list'));
   echo
     '[ <a href="'.$url_main.'">表紙</a>'.
     ' | <a href="'.$url_list.'">一覧</a> ]';
 
-  $url_read=htmlspecialchars("$lwiki_base_php?id=$pageid");
-  $url_edit=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
-  $url_diff=htmlspecialchars("$lwiki_base_php?id=$pageid&hist=last");
+  $url_read=htmlspecialchars(lwiki_link_page($pageid));
+  $url_edit=htmlspecialchars(lwiki_link_page($pageid,'mode=edit'));
+  $url_diff=htmlspecialchars(lwiki_link_page($pageid,'hist=last'));
   echo
     ' [ <a href="'.$url_read.'">'.$ht_page_title.'</a>'.
     ' | <a href="'.$url_edit.'">編集</a>'.
@@ -43,7 +43,7 @@
         $hist_remk=htmlspecialchars(urldecode($fields[3]));
         $hist_size=(substr($fields[2],0,1)=='!'?'Δ':'').(strlen($line)+1).'B';
         $hist_line='<tr><td>v'.$iline.'</td>'.
-          '<td><a href="'.htmlspecialchars("$lwiki_base_php?id=$pageid&hist=$iline").'">'.$hist_date.'</a></td>'.
+          '<td><a href="'.htmlspecialchars(lwiki_link_page($pageid,"hist=$iline")).'">'.$hist_date.'</a></td>'.
           '<td>'.$hist_auth.'</td><td>'.$hist_remk.'</td><td>'.$hist_size.'</td></tr>';
         $html=$hist_line.PHP_EOL.$html;
         $iline++;

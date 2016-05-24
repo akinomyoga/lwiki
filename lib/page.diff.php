@@ -88,12 +88,12 @@
 
   $diff_links='';
   if($h2>=1)
-    $diff_links.='<a href="'.htmlspecialchars("$lwiki_base_php?id=$pageid&hist=".($h2-1)).'">前</a>';
+    $diff_links.='<a href="'.htmlspecialchars(lwiki_link_page($pageid,'hist='.($h2-1))).'">前</a>';
   else
     $diff_links.=' <span style="color:gray;">前</span>';
   $diff_links.=" <b>($h2text/$h1text)</b> ";
   if($h2+1<count($lines))
-    $diff_links.='<a href="'.htmlspecialchars("$lwiki_base_php?id=$pageid&hist=".($h2+1)).'">次</a>';
+    $diff_links.='<a href="'.htmlspecialchars(lwiki_link_page($pageid,'hist='.($h2+1))).'">次</a>';
   else
     $diff_links.='<span style="color:gray;">次</span>';
 
@@ -102,15 +102,15 @@
 ?>
 <p class="lwiki-linkbar-main">
   <?php
-    $url_main=htmlspecialchars("$lwiki_base_php");
-    $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
+    $url_main=htmlspecialchars(lwiki_link_page());
+    $url_list=htmlspecialchars(lwiki_link_page(null,'mode=list'));
     echo
       '[ <a href="'.$url_main.'">表紙</a>'.
       ' | <a href="'.$url_list.'">一覧</a> ]';
 
-    $url_read=htmlspecialchars("$lwiki_base_php?id=$pageid");
-    $url_edit=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
-    $url_hist=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=hist");
+    $url_read=htmlspecialchars(lwiki_link_page($pageid));
+    $url_edit=htmlspecialchars(lwiki_link_page($pageid,'mode=edit'));
+    $url_hist=htmlspecialchars(lwiki_link_page($pageid,'mode=hist'));
     echo
       ' [ <a href="'.$url_read.'">'.$ht_page_title.'</a>'.
       ' | <a href="'.$url_edit.'">編集</a>'.

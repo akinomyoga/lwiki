@@ -4,16 +4,16 @@
 ?>
 <p class="lwiki-linkbar-main">
 <?php
-  $url_main=htmlspecialchars($lwiki_base_php);
-  $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
+  $url_main=htmlspecialchars(lwiki_link_page());
+  $url_list=htmlspecialchars(lwiki_link_page(null,'mode=list'));
   echo
     '[ <a href="'.$url_main.'">表紙</a>'.
     ' | <a href="'.$url_list.'">一覧</a> ]';
 
   $ht_nested=lwiki\page\generate_ancestor_links($page_title);
-  $url_edit=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
-  $url_hist=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=hist");
-  $url_diff=htmlspecialchars("$lwiki_base_php?id=$pageid&hist=last");
+  $url_edit=htmlspecialchars(lwiki_link_page($pageid,'mode=edit'));
+  $url_hist=htmlspecialchars(lwiki_link_page($pageid,'mode=hist'));
+  $url_diff=htmlspecialchars(lwiki_link_page($pageid,'hist=last'));
   echo
     ' [ '.$ht_nested.
     ' | <a href="'.$url_edit.'">編集</a>'.
@@ -43,7 +43,7 @@
       lwiki_include_string($comment_content);
     }
 
-    $comment_action="$lwiki_base_php?id=$pageid#comment-form";
+    $comment_action=lwiki_link_page($pageid).'#comment-form';
     include ".lwiki/lib/stub.comment-form.php";
   }
 ?>

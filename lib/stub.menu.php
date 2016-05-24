@@ -3,14 +3,13 @@
 global $pageid,$pageinfo;
 
 function sidebar_begin_holder($title,$haslinkbar=false){
-  global $lwiki_base_php;
   $title=htmlspecialchars($title);
   echo '<div class="lwiki-menu-holder">'.PHP_EOL;
   echo "<h1>$title</h1>".PHP_EOL;
   if($haslinkbar){
-    $url_main=htmlspecialchars($lwiki_base_php);
-    $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
-    $url_edit=htmlspecialchars("$lwiki_base_php?id=Menu&mode=edit");
+    $url_main=htmlspecialchars(lwiki_link_page());
+    $url_list=htmlspecialchars(lwiki_link_page(null,'mode=list'));
+    $url_edit=htmlspecialchars(lwiki_link_page('Menu','mode=edit'));
     echo '<p class="lwiki-page-wikilinks">'.PHP_EOL;
     echo '[ <a href="'.$url_main.'">表紙</a> | <a href="'.$url_list.'">一覧</a> ]'.PHP_EOL;
     echo '  [ <a href="'.$url_edit.'">目次編集</a> ]'.PHP_EOL;

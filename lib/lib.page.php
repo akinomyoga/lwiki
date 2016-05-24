@@ -3,26 +3,26 @@
 namespace lwiki\page;
 
 function generate_dynamic_link($html,$name,$hash){
-  global $lwiki_base_php;
   if(!$name)
     return '<a class="lwiki-internal-link" href="#'.htmlspecialchars($hash).'">'.$html.'</a>';
 
   $targetPageid=urlencode($name);
 
-  $link="$lwiki_base_php?id=$targetPageid";
+  $link_hash='';
+  $link_get=null;
   $classAttribute='';
 
   if(!file_exists('.lwiki/data/page.'.$targetPageid.'.htm')){
     $classAttribute=' class="lwiki-missing-link"';
-    $link.='&mode=edit';
+    $link_get='mode=edit';
   }else if($hash!==false)
-    $link.='#'.htmlspecialchars($hash);
+    $link_hash='#'.$hash;
 
-  return '<a'.$classAttribute.' href="'.htmlspecialchars($link).'">'.$html.'</a>';
+  $url_edit=htmlspecialchars(lwiki_link_page($targetPageid,$link_get).$link_hash);
+  return '<a'.$classAttribute.' href="'.$url_edit.'">'.$html.'</a>';
 }
 
 function generate_ancestor_links($pageTitle){
-  global $lwiki_base_php;
   global $page_title;
   if($pageTitle===null)$pageTitle=$page_title;
 
@@ -36,7 +36,7 @@ function generate_ancestor_links($pageTitle){
 
     $id=urlencode($title);
     if(file_exists('.lwiki/data/page.'.$id.'.htm')){
-      $url_read="$lwiki_base_php?id=$id";
+      $url_read=lwiki_link_page($id);
       $ht.='<a href="'.$url_read.'">'.htmlspecialchars($name).'</a><span class="lwiki-linkbar-separator">/</span>';
       $name='';
     }else{
@@ -54,7 +54,7 @@ function generate_ancestor_links($pageTitle){
 function begin_document($title,$headContent=""){
   global $lwiki_base_resourceDirectoryUrl;
   global $pageid;
-  global $lwiki_page_commonHead;
+  global $lwiki_config_commonHeadContent;
   global $LWIKI_URL_AGH;
   if($headContent!=""){
     $headContent=preg_replace('/\s*\z/su',PHP_EOL,
@@ -76,7 +76,7 @@ $headContent  <link rel="stylesheet" type="text/css" charset="utf-8" href="{$LWI
   <script type="text/javascript" charset="utf-8" src="{$LWIKI_URL_AGH}/agh.fly.js"></script>
   <script type="text/javascript" charset="utf-8" src="{$lwiki_base_resourceDirectoryUrl}/lwiki.js"></script>
   <link rel="stylesheet" type="text/css" charset="utf-8" href="{$lwiki_base_resourceDirectoryUrl}/lwiki.css" />
-$lwiki_page_commonHead</head>
+$lwiki_config_commonHeadContent</head>
 <body class="lwiki-menued">
 
 EOF;

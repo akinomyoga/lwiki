@@ -15,6 +15,9 @@ const LWIKI_PHP_END_TAG="\x3F>";
 function lwiki_hash($key,$salt='4fa52acaf207'){
   return substr(base64_encode(md5('salt+'.$salt.'+'.$key,true)),0,12);
 }
+function lwiki_link_page($id,$get){
+  return '?id='.$id.'&'.$get;
+}
 
 require_once dirname(__FILE__).'/lib/lib.lwiki.php';
 
@@ -22,7 +25,6 @@ require_once dirname(__FILE__).'/lib/lib.lwiki.php';
 $_lwiki_base=getenv("LWIKI_BASE");
 if(!$_lwiki_base)$_lwiki_base='file://'.dirname(__FILE__);
 $lwiki_base_resourceDirectoryUrl=$_lwiki_base.'/res';
-$lwiki_base_php=$_lwiki_base.'/index.php';
 
 if($argv[1]==NULL)
   $fname='php://stdin';

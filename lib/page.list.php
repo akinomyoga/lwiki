@@ -8,7 +8,7 @@
 ?>
 <p class="lwiki-linkbar-main">
 <?php
-  $url_main=htmlspecialchars($lwiki_base_php);
+  $url_main=htmlspecialchars(lwiki_link_page());
   echo
     '[ <a href="'.$url_main.'">表紙</a>'.
     ' | <b>一覧</b> ]';
@@ -42,8 +42,8 @@
     $page_name=urldecode($m[1]);
     $page_date=@lwiki_datetime(@filemtime('./.lwiki/data/'.$page));
 
-    $url_read=htmlspecialchars("$lwiki_base_php?id='.$page_id");
-    $url_diff=htmlspecialchars("$lwiki_base_php?id=$page_id&hist=last");
+    $url_read=htmlspecialchars(lwiki_link_page($page_id));
+    $url_diff=htmlspecialchars(lwiki_link_page($page_id,'hist=last'));
     $htmlPageName=htmlspecialchars($page_name);
     $htmlPageDate=htmlspecialchars($page_date).' [<a href="'.$url_diff.'">差分</a>]';
     echo '<tr><td><a href="'.$url_read.'">'.$htmlPageName.'</a></td><td></td><td>'.$htmlPageDate.'</td></tr>'.PHP_EOL;
@@ -66,8 +66,8 @@
       $htmlAuth=htmlspecialchars($edit_auth);
       $htmlDate=htmlspecialchars($edit_date);
       $htmlPage=htmlspecialchars($edit_page);
-      $url_diff=htmlspecialchars("$lwiki_base_php?id=$edit_pageid&hist=$edit_hist");
-      $url_read=htmlspecialchars("$lwiki_base_php?id=$edit_pageid");
+      $url_diff=htmlspecialchars(lwiki_link_page($edit_pageid,"hist=$edit_hist"));
+      $url_read=htmlspecialchars(lwiki_link_page($edit_pageid));
       $htmlDiffLink='[<a href="'.$url_diff.'">差分</a>]';
       $htmlPageLink='<a href="'.$url_read.'">'.$htmlPage.'</a>';
       $htmlLine='<li>'.$htmlDate.' '.$htmlDiffLink.' '.$htmlPageLink.' by '.$htmlAuth.'</li>';

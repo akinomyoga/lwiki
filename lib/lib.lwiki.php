@@ -11,8 +11,15 @@
 # @var $lwiki_base_resourceDirectoryUrl
 #   現在は @... 拡張で使っているだけである。
 #
-# @var $lwiki_base_php
+# @const LWIKI_PHP_BEGIN_TAG
+# @const LWIKI_PHP_END_TAG
+#
+# 使用する外部関数
+#
+# @fn lwiki_link_page($id,$get)
 #   "[編集] リンク" の生成時に使用する。
+#
+# @fn lwiki_hash($value,$salt)
 #
 
 namespace lwiki\convert;
@@ -530,9 +537,8 @@ class lwiki_converter{
   private $m_procGenerateEditLink=NULL;
 
   private static function generate_editlink_default($_pageid,$mark){
-    global $lwiki_base_php;
     $mark=urlencode($mark);
-    $url_edit=htmlspecialchars("$lwiki_base_php?id=$_pageid&mode=edit&part=$mark");
+    $url_edit=htmlspecialchars(lwiki_link_page($_pageid,"mode=edit&part=$mark"));
     return '<a class="lwiki-edit-partial" href="'.$url_edit.'">[編集]</a>';
   }
   public function setCustomGenerateEditLink($proc){

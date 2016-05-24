@@ -30,6 +30,8 @@ $LWIKI_URL_AGH='/~murase/agh';
 $LWIKI_URL_PDF_ICON=$LWIKI_URL_AGH.'/icons/file-pdf.png';
 $lwiki_config_default_pageid='Main Page';
 
+# $lwiki_config_rewrite=false;
 # $lwiki_config_timezone=new DateTimeZone('Asia/Tokyo');
+# $lwiki_config_commonHeadContent='';
 
 ?>
