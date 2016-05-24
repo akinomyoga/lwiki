@@ -22,6 +22,7 @@ require_once dirname(__FILE__).'/lib/lib.lwiki.php';
 $_lwiki_base=getenv("LWIKI_BASE");
 if(!$_lwiki_base)$_lwiki_base='file://'.dirname(__FILE__);
 $lwiki_base_resourceDirectoryUrl=$_lwiki_base.'/res';
+$lwiki_base_php=$_lwiki_base.'/index.php';
 
 if($argv[1]==NULL)
   $fname='php://stdin';

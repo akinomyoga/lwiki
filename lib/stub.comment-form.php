@@ -1,9 +1,7 @@
 <?php // -*- mode:php -*-
-
   $html_captcha=lwiki_auth_generate();
-
   if($comment_action=='')
-    $comment_action="index.php?id=$pageid";
+    $comment_action="$lwiki_base_php?id=$pageid";
 ?>
 <div id="comment-form" style="width:400px;text-ailgn:center;border:1px solid gray;padding:10px 20px;">
   <?php if($comment_error!='')echo $comment_error;?>

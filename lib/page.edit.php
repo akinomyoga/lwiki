@@ -6,13 +6,13 @@
   $frag_captcha=lwiki_auth_generate();
 
   if(!$edit_session->exists()){
-    $frag_action=htmlspecialchars("index.php?id=$pageid&mode=edit");
+    $frag_action=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
     $frag_title='新規作成:'.$ht_page_title;
   }else if($edit_session->is_part()){
-    $frag_action=htmlspecialchars("index.php?id=$pageid&mode=edit&part=".urlencode($_GET['part']));
+    $frag_action=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit&part=".urlencode($_GET['part']));
     $frag_title='部分編集:'.$ht_page_title;
   }else{
-    $frag_action=htmlspecialchars("index.php?id=$pageid&mode=edit");
+    $frag_action=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
     $frag_title='編集:'.$ht_page_title;
   }
 
@@ -24,14 +24,22 @@
   lwiki\page\begin_document($frag_title,'<meta name="robots" content="none" />'.PHP_EOL);
 ?>
 <p class="lwiki-linkbar-main">
-  [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]
-  <?php
-    $fname_content='.lwiki/data/page.'.$pageid.'.htm';
-    echo
-      ' [ <a href="?id='.$pageid.'">'.$ht_page_title.'</a>'.
-      ' | <b>編集</b>'.
-      ' | <a href="?id='.$pageid.'&amp;mode=hist">履歴</a> - <a href="?id='.$pageid.'&amp;hist=last">差分</a>]'.PHP_EOL;
-  ?>
+<?php
+  $url_main=htmlspecialchars($lwiki_base_php);
+  $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
+  echo
+    '[ <a href="'.$url_main.'">表紙</a>'.
+    ' | <a href="'.$url_list.'">一覧</a> ]';
+
+  $url_read=htmlspecialchars("$lwiki_base_php?id=$pageid");
+  $url_hist=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=hist");
+  $url_diff=htmlspecialchars("$lwiki_base_php?id=$pageid&hist=last");
+  echo
+    ' [ <a href="'.$url_read.'">'.$ht_page_title.'</a>'.
+    ' | <b>編集</b>'.
+    ' | <a href="'.$url_hist.'">履歴</a>'.
+    ' - <a href="'.$url_diff.'">差分</a>]'.PHP_EOL;
+?>
 </p>
 <p class="lwiki-linkbar-modified"><?php echo page_modified_date();?></p>
 <div class="lwiki-page-content">

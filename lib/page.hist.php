@@ -7,15 +7,22 @@
 
 ?>
 <p class="lwiki-linkbar-main">
-  [ <a href="index.php">表紙</a> | <a href="?mode=list">一覧</a> ]
-  <?php
-    $fname_content='.lwiki/data/page.'.$pageid.'.htm';
-    $url_edit=htmlspecialchars("index.php?id=$pageid&mode=edit");
-    echo
-      ' [ <a href="?id='.$pageid.'">'.$ht_page_title.'</a>'.
-      ' | <a href="'.$url_edit.'">編集</a>'.
-      ' | <b>履歴</b> - <a href="?id='.$pageid.'&amp;hist=last">差分</a>]'.PHP_EOL;
-  ?>
+<?php
+  $url_main=htmlspecialchars($lwiki_base_php);
+  $url_list=htmlspecialchars("$lwiki_base_php?mode=list");
+  echo
+    '[ <a href="'.$url_main.'">表紙</a>'.
+    ' | <a href="'.$url_list.'">一覧</a> ]';
+
+  $url_read=htmlspecialchars("$lwiki_base_php?id=$pageid");
+  $url_edit=htmlspecialchars("$lwiki_base_php?id=$pageid&mode=edit");
+  $url_diff=htmlspecialchars("$lwiki_base_php?id=$pageid&hist=last");
+  echo
+    ' [ <a href="'.$url_read.'">'.$ht_page_title.'</a>'.
+    ' | <a href="'.$url_edit.'">編集</a>'.
+    ' | <b>履歴</b>'.
+    ' - <a href="'.$url_diff.'">差分</a>]'.PHP_EOL;
+?>
 </p>
 <p class="lwiki-linkbar-modified"><?php echo page_modified_date();?></p>
 <div class="lwiki-page-content">
@@ -36,7 +43,7 @@
         $hist_remk=htmlspecialchars(urldecode($fields[3]));
         $hist_size=(substr($fields[2],0,1)=='!'?'Δ':'').(strlen($line)+1).'B';
         $hist_line='<tr><td>v'.$iline.'</td>'.
-          '<td><a href="index.php?id='.htmlspecialchars($pageid).'&hist='.$iline.'">'.$hist_date.'</a></td>'.
+          '<td><a href="'.htmlspecialchars("$lwiki_base_php?id=$pageid&hist=$iline").'">'.$hist_date.'</a></td>'.
           '<td>'.$hist_auth.'</td><td>'.$hist_remk.'</td><td>'.$hist_size.'</td></tr>';
         $html=$hist_line.PHP_EOL.$html;
         $iline++;

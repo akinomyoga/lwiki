@@ -3,13 +3,13 @@
 namespace lwiki\page;
 
 function generate_dynamic_link($html,$name,$hash){
+  global $lwiki_base_php;
   if(!$name)
     return '<a class="lwiki-internal-link" href="#'.htmlspecialchars($hash).'">'.$html.'</a>';
 
   $targetPageid=urlencode($name);
 
-  //$link='?id='.$targetPageid;
-  $link=$_SERVER['PHP_SELF'].'?id='.$targetPageid;
+  $link="$lwiki_base_php?id=$targetPageid";
   $classAttribute='';
 
   if(!file_exists('.lwiki/data/page.'.$targetPageid.'.htm')){
@@ -18,10 +18,11 @@ function generate_dynamic_link($html,$name,$hash){
   }else if($hash!==false)
     $link.='#'.htmlspecialchars($hash);
 
-  return '<a'.$classAttribute.' href="'.$link.'">'.$html.'</a>';
+  return '<a'.$classAttribute.' href="'.htmlspecialchars($link).'">'.$html.'</a>';
 }
 
 function generate_ancestor_links($pageTitle){
+  global $lwiki_base_php;
   global $page_title;
   if($pageTitle===null)$pageTitle=$page_title;
 
@@ -35,7 +36,8 @@ function generate_ancestor_links($pageTitle){
 
     $id=urlencode($title);
     if(file_exists('.lwiki/data/page.'.$id.'.htm')){
-      $ht.='<a href="?id='.$id.'">'.htmlspecialchars($name).'</a><span class="lwiki-linkbar-separator">/</span>';
+      $url_read="$lwiki_base_php?id=$id";
+      $ht.='<a href="'.$url_read.'">'.htmlspecialchars($name).'</a><span class="lwiki-linkbar-separator">/</span>';
       $name='';
     }else{
       $name.='/';

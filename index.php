@@ -72,9 +72,10 @@ require_once 'lwiki_config.php';
 
 //---------------------------------------------------------------------------
 
-// $lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$_SERVER['PHP_SELF']);
+$lwiki_base_php=$_SERVER['PHP_SELF'];
+// $lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$lwiki_base_php);
 // $lwiki_base_resourceDirectoryUrl=$lwiki_base_wikiDirectoryUrl.'/res';
-$lwiki_base_resourceDirectoryUrl=preg_replace('/index\.php$/','res',$_SERVER['PHP_SELF']);
+$lwiki_base_resourceDirectoryUrl=preg_replace('/index\.php$/','res',$lwiki_base_php);
 
 $lwiki_page_commonHead=<<<EOS
 EOS;
@@ -123,7 +124,7 @@ case 'edit':
   if(!$page_updated){
     include ".lwiki/lib/page.edit.php";
   }else{
-    header("Location: index.php?id=$pageid"); // flush post data
+    header("Location: $lwiki_base_php?id=$pageid"); // flush post data
   }
   exit;
 case 'list':
@@ -160,7 +161,7 @@ default:
     if($comment_added){
       $comment_name=$_POST['name'];
       setcookie('comment-name',$comment_name);
-      header("Location: index.php?id=$pageid"); // flush post data
+      header("Location: $lwiki_base_php?id=$pageid"); // flush post data
       exit;
     }else{
       $comment_body=$_POST['body'];
