@@ -83,7 +83,7 @@
   }
 
   function initialize_toggle(div,closed){
-    
+
   }
 
   function initialize_color(target){
@@ -165,7 +165,7 @@
   function initialize_preview(){
     var form=document.getElementById("lwiki_form_edit");
     if(!form)return;
-    
+
     var txtWiki=form.elements["content"];
     var btnPrev=form.elements["page_preview"];
     var e_output=document.getElementById("lwiki_page_preview");
@@ -188,7 +188,7 @@
         }
       };
       xhr.send("content="+_encode(txtWiki.value));
-      
+
       // cancel default behavior
       if(e.preventDefault)e.preventDefault();
       return e.returnValue=false;

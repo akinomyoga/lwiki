@@ -59,7 +59,7 @@ class lwiki_hist{
         $a2=$a1;
         if($m[2]!=='')$a2=$m[2]-1;
         $iline=$a2+1;
-      }else{        
+      }else{
         // $m[1]i $m[4]
         array_push($file2,$m[4]);
       }

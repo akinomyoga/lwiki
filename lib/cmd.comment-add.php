@@ -132,7 +132,7 @@ function comment_regenerate(){
     $flock->unlock($fdat);
     return false;
   }
-  
+
   $flock->unlock($fdat);
   return true;
 }

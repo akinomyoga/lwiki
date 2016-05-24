@@ -297,7 +297,7 @@ class lwc_util{
   }
 }
 
-//
+//
 //-----------------------------------------------------------------------------
 // language definition
 
@@ -402,7 +402,7 @@ class lwiki_converter{
   private $npat;
 
   public $flagInline=false;
- 
+
   public $option_prog_enabled=false;
   public $pageid;
   public function __construct($lang){
@@ -569,7 +569,7 @@ function convert($content){
 //-----------------------------------------------------------------------------
 // definition of the default lwiki_language
 
-//
+//
 //-----------------------------------------------------------------------------
 // block components
 

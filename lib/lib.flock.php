@@ -53,13 +53,13 @@ class file_lock{
     if(!($fp=fopen($lockfile,'a+')))return false;
     $fpdict[$filename]=$fp;
     flock($fp,LOCK_EX);
-  }  
+  }
   private function flock_unlock($filename){
     if($fpdict[$filename]){
       fclose($fpdict[$filename]);
       $fpdict[$filename]=null;
     }
-  }  
+  }
   //-----------------------------------
 
   //ロック用関数
@@ -98,7 +98,7 @@ class file_lock{
   }
 
   //---------------------------------------------------------------------------
-  
+
   public function file_atomic_append_locked($fname,$content){
     $ret=false;
     if($this->lock($fname)){

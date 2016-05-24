@@ -28,7 +28,7 @@
 <div class="lwiki-page-content">
 <?php
   if($_GET['mode']=='hist'){
-    
+
     $fname_hist='.lwiki/data/page.'.$pageid.'.hist';
     if(file_exists($fname_hist)){
       echo '<table class="lwiki-single lwiki-center">'.PHP_EOL;

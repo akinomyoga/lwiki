@@ -186,7 +186,7 @@ class page_update_proc{
       $hist->unlock();
       return false;
     }
-    
+
     $hist->unlock();
 
     $editlog=$ipaddr.'/'.urlencode($date).'/'.$pageid.'/'.$hindex.PHP_EOL;
@@ -285,7 +285,7 @@ class page_update_proc{
     if(!$flock->file_atomic_save_locked(".lwiki/data/page.$pageid.info",$info)){
       error('(page_update): sorry, failed to update the page information in page.info.');
     }
-    
+
     return true;
   }
 }
