@@ -3,6 +3,59 @@
 lwiki
 
 -------------------------------------------------------------------------------
+  Memo
+-------------------------------------------------------------------------------
+
+Apache RewriteRule に関して
+
+* 既定で urldecode された値について正規表現による一致が試みられ、
+  生成された url に対して urlencode が実行される様になっている。
+  所が、何と %2B → + は urldecode されるのに、+ → %2B の urlencode はされない様だ。
+  これによって、受け取った側で urlencode すると %2B → + になって欲しい所が + → ' ' になってしまう。
+
+  対称な decode/encode が実行される為には RewriteRule に [B] flag を指定する必要がある。
+
+* RewriteRule は既定では %2F を含む URL を書き換えてくれない
+
+  http://stackoverflow.com/questions/7544759/cannot-match-2f-in-mod-rewrite
+  http://blog.flatlabs.net/20110307_230227/
+  http://httpd.apache.org/docs/2.2/mod/core.html#allowencodedslashes
+
+  これは httpd.conf に
+
+    AllowEncodedSlashes On
+
+  を記述する他はない。.htaccess では制御不可能である。
+
+  http://stackoverflow.com/questions/4390436/need-to-allow-encoded-slashes-on-apache
+
+  によると全ての <VirtualHost> 毎にこれを記述する必要があるとのこと。
+
+
+* RewriteCond で相対パスが使えない問題
+
+  RewriteRule の変換対象は現在位置 (RewriteBase) からの相対パスである。
+  一方で RewriteCond では相対パスを使用することができない。
+  REQUEST_URI (絶対パス) を使用するしかない。
+
+  この場合の解決方法は以下に載っていた。
+
+    http://stackoverflow.com/questions/8617191/how-to-get-the-local-path-in-rewritecond
+
+  RewriteRule で - を指定して変換から除外するか、
+
+    RewriteRule ^pattern - [L]
+
+  或いは、$0 という変数を用いて RewriteCond を書けば良い。
+
+    RewriteCond $0 ^pattern
+    RewriteRule ^.*
+
+    実は RewriteCond は RewriteRule の適用が試みられた後に実施される。
+    そして $0-$9 には RewriteRule の正規表現で一致した内容が入っている。
+
+
+-------------------------------------------------------------------------------
   ToDo
 -------------------------------------------------------------------------------
 

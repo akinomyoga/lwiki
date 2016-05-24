@@ -96,7 +96,10 @@ function lwiki_link_page($pageid=null,$get=null){
   if($lwiki_config_rewrite){
     global $lwiki_base_baseDirectoryUrl;
     $url=$lwiki_base_baseDirectoryUrl.'/';
-    if($pageid!==null)$url.=str_replace('%2F','/',$pageid);
+    if($pageid!==null){
+      # Apache - AllowEncodedSlashes Off 対策で %2F は / に変換する。
+      $url.=str_replace('%2F','/',$pageid);
+    }
   }else{
     global $lwiki_base_php;
     $url=$lwiki_base_php;
