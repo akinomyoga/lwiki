@@ -121,9 +121,9 @@ function lwiki_determine_pageid(){
   }
 
   # if accessed as http://example.com/wiki/index.php/title
-  $pageid=lwiki_util_getTail($_SERVER['PHP_SELF'],$_SERVER['SCRIPT_NAME'].'/');
-  if($pageid!==false){
-    $page_title=urldecode($pageid);
+  $page_title=lwiki_util_getTail($_SERVER['PHP_SELF'],$_SERVER['SCRIPT_NAME'].'/');
+  if($page_title!==false){
+    $pageid=urlencode($page_title);
     return;
   }
 
