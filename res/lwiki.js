@@ -238,7 +238,6 @@
     if(!lwiki.commentForm)return;
     var inTxt=lwiki.commentForm.elements["body"];
 
-    console.log("hello");
     lwiki.commentInsertAnchor=function(commentIndex){
       inTxt.value='>>'+commentIndex+'\n'+inTxt.value.replace(/^>>\d+\s*\n?/,"");
     };
@@ -246,7 +245,8 @@
     lwiki.commentInsertQuotes=function(commentIndex){
       var source=lwiki.commentSource[commentIndex];
       if(source){
-        inTxt.value=inTxt.value.replace(/(.)\n?$/,'$1\n\n')+source.replace(/^|\n(?!$)/g,'$&> ');
+        var quoted=source.replace(/^|\n(?!$)/g,'$&> ').replace(/\n?$/,'\n');
+        inTxt.value=inTxt.value.replace(/(.)\n?$/,'$1\n\n')+quoted;
       }
     };
 
