@@ -1354,7 +1354,6 @@ lwiki_language::$defaultInstance->register_entity('img',true,true,function($name
 // - ,,    sub
 // - ^^    sub
 // - ==    dfn
-// - $     inline math-mode latex
 // - <?\w+ code
 lwiki_language::$defaultInstance->register_pattern(
   '(>>\d+|~~|\[\[|'."'''?".'|##|%%|__|,,|\^\^|==)',
@@ -1368,7 +1367,7 @@ lwiki_language::$defaultInstance->register_pattern(
       $num=mb_substr($spec,2);
       return '&gt;&gt;<a class="lwiki-comment-anchor" href="#lwiki-comment-'.$num.'">'.$num.'</a>';
     case "''":case '%%':case '==':case '##':
-    case '__':case ',,':case '^^':case '$':case '<?':
+    case '__':case ',,':case '^^':case '<?':
       $tag='span';
       $isverb=false;
       switch($spec2){
@@ -1491,15 +1490,24 @@ lwiki_language::$defaultInstance->register_entity('begin',true,true,function($na
   }
   return false;
 });
+
+// - $     inline math-mode latex
+// - $$    \begin{displaymath}
 lwiki_language::$defaultInstance->register_pattern(
-  '((?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[_a-zA-Z][-_\w]*\*?\s?))',
+  '(^\$\$|(?<![^-\/\(\[\{\<\s「『【〈《。、．，])\$(?=[^\s$])|\<\?(?:[_a-zA-Z][-_\w]*\*?\s?))',
   function($conv,$spec,$content,&$pos){
     $spec2=mb_substr($spec,0,2);
     switch($spec2){
-    case '$':case '<?':
+    case '$$':case '$':case '<?':
       $tag='span';
       $isverb=false;
       switch($spec2){
+      case '$$':
+        $term='\$\$';
+        $tag='div class="aghfly-begin-displaymath"';
+        $etag='div';
+        $isverb=true;
+        break;
       case '$':
         $term='(?<=\S)\$(?!\w)';
         $tag='span class="aghfly-tex-math"';
@@ -1526,9 +1534,6 @@ lwiki_language::$defaultInstance->register_pattern(
           $cont=htmlspecialchars($cont);
         else
           $cont=$conv->iconvert($cont);
-
-        if($spec=='==')
-          $conv->keywords_append(lwc_html_gettext($cont));
 
         return '<'.$tag.'>'.$cont.'</'.$etag.'>';
       }
