@@ -203,6 +203,64 @@ function command.archive {
   )
 }
 
+function command.enable-rewrite {
+  check-lwiki-directory || return 1
+
+  if [[ ! -e .htaccess ]]; then
+    echo '# htaccess' > .htaccess
+  fi
+
+  if grep -Eq '^# <lwiki enable-rewrite>' .htaccess; then
+    echo 'lwiki enable-rewrite: Rewrite already enabled!' >&2
+  elif grep -Eq '^# <lwiki disable-rewrite>' .htaccess; then
+    sed '/^# <lwiki disable-rewrite>/,/^# <\/lwiki>/{
+      s/^# <lwiki disable-rewrite>/# <lwiki enable-rewrite>/
+      s/^# Rewrite/Rewrite/
+    }' .htaccess > .htaccess.part &&
+      /bin/mv .htaccess.part .htaccess
+  else
+    cat <<'EOF' >> .htaccess
+
+# <lwiki enable-rewrite>
+# automatically inserted by `lwiki enable-rewrite' command
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !/wiki/index\.php
+RewriteCond %{REQUEST_URI} !/wiki/res
+RewriteRule ^([^?]+)$ /~murase/wiki/index.php?id=$1 [L,QSA]
+# </lwiki>
+EOF
+  fi
+}
+
+function command.disable-rewrite {
+  check-lwiki-directory || return 1
+
+  if [[ ! -e .htaccess ]]; then
+    echo '# htaccess' > .htaccess
+  fi
+
+  if grep -Eq '^# <lwiki enable-rewrite>' .htaccess; then
+    sed '/^# <lwiki enable-rewrite>/,/^# <\/lwiki>/{
+      s/^# <lwiki enable-rewrite>/# <lwiki disable-rewrite>/
+      s/^Rewrite/# Rewrite/
+    }' .htaccess > .htaccess.part &&
+      /bin/mv .htaccess.part .htaccess
+  elif grep -Eq '^# <lwiki disable-rewrite>' .htaccess; then
+    echo 'lwiki enable-rewrite: Rewrite already disabled!' >&2
+  else
+    cat <<'EOF' >> .htaccess
+
+# <lwiki disable-rewrite>
+# automatically inserted by `lwiki enable-rewrite' command
+# RewriteEngine on
+# RewriteCond %{REQUEST_URI} !/wiki/index\.php
+# RewriteCond %{REQUEST_URI} !/wiki/res
+# RewriteRule ^([^?]+)$ /~murase/wiki/index.php?id=$1 [L,QSA]
+# </lwiki>
+EOF
+  fi
+}
+
 function command.page-convert {
   check-lwiki-directory || return 1
 
