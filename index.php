@@ -57,10 +57,15 @@ function lwiki_auth_securimage_generate(){
 $lwiki_config_timezone=new DateTimeZone('Asia/Tokyo');
 function lwiki_datetime($utime){
   // http://qiita.com/Popphron/items/19c5bc6646db99bd3acb
+  // - new DateTime() を使用しようとすると timezone が php.ini で指定されていない場合にエラーになる。
+  // - '@' 形式で初期化すると $lwiki_config_timezone は使用されない。
   global $lwiki_config_timezone;
-  $time = new DateTime();
-  if($utime!==null)$time->setTimestamp($utime);
-  return $time->setTimezone($lwiki_config_timezone)->format('Y-m-d H:i:s T');
+  $time=new DateTime(NULL,$lwiki_config_timezone);
+  if($utime!==null){
+    $time->setTimestamp($utime);
+    $time->setTimezone($lwiki_config_timezone);
+  }
+  return $time->format('Y-m-d H:i:s T');
 }
 
 require_once 'lwiki_config.php';
