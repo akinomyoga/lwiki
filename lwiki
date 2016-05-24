@@ -203,6 +203,11 @@ function command.archive {
   )
 }
 
+#
+# RewriteCond で現在位置の相対パスに対して条件を判定する方法
+#   http://stackoverflow.com/questions/8617191/how-to-get-the-local-path-in-rewritecond
+#
+
 function command.enable-rewrite {
   check-lwiki-directory || return 1
 
@@ -224,9 +229,8 @@ function command.enable-rewrite {
 # <lwiki enable-rewrite>
 # automatically inserted by `lwiki enable-rewrite' command
 RewriteEngine on
-RewriteCond %{REQUEST_URI} !/wiki/index\.php
-RewriteCond %{REQUEST_URI} !/wiki/res
-RewriteRule ^([^?]+)$ /~murase/wiki/index.php?id=$1 [L,QSA]
+RewriteRule ^(res|index.php)(/|$) - [L]
+RewriteRule ^([^?]+)$ index.php?id=$1 [L,QSA]
 # </lwiki>
 EOF
   fi
@@ -253,9 +257,8 @@ function command.disable-rewrite {
 # <lwiki disable-rewrite>
 # automatically inserted by `lwiki enable-rewrite' command
 # RewriteEngine on
-# RewriteCond %{REQUEST_URI} !/wiki/index\.php
-# RewriteCond %{REQUEST_URI} !/wiki/res
-# RewriteRule ^([^?]+)$ /~murase/wiki/index.php?id=$1 [L,QSA]
+# RewriteRule ^(res|index.php)(/|$) - [L]
+# RewriteRule ^([^?]+)$ index.php?id=$1 [L,QSA]
 # </lwiki>
 EOF
   fi
