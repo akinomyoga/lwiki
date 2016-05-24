@@ -233,7 +233,23 @@
     agh.dom.insert(inPost,btnPrev,'before');
   }
 
-  function initialize_comment_reply(){
+  function getElementsByTagNameAndClassName(parentNode,tagName,className){
+    if(parentNode.querySelectorAll){
+      return agh(parentNode.querySelectorAll(tagName+'.'+className),Array);
+    }else{
+      var ret=[];
+      var elems=parentNode.getElementsByTagName(tagName);
+      var holders=[];
+      for(var i=0,n=elems.length;i<n;i++){
+        var elem=elems[i];
+        if(elem.className===className)
+          ret.push(elem);
+      }
+      return ret;
+    }
+  }
+
+  function initialize_comment_list(){
     var lwiki=window.lwiki;
     if(!lwiki.commentForm)return;
     var inTxt=lwiki.commentForm.elements["body"];
@@ -250,10 +266,12 @@
       }
     };
 
-    var divs=document.getElementsByTagName("div");
-    for(var i=0,n=divs.length;i<n;i++){
-      var div=divs[i];
-      if(div.className!=='comment-holder')continue;
+    // div.comment-holder
+    var holders=getElementsByTagNameAndClassName(document,'div','comment-holder');
+
+    var index2info=[];
+    for(var i=0,n=holders.length;i<n;i++){
+      var div=holders[i];
       var p=div.childNodes[0];
       var commentIndex=parseInt(p.getAttribute('data-comment-number'));
 
@@ -270,6 +288,35 @@
       }
 
       agh.dom.insert(p,html,'end');
+
+      //
+      // コメント並び替え
+      //
+
+      var rootAnchor=(function determineRootAnchor(){
+        var cand=null;
+        var anchors=getElementsByTagNameAndClassName(div,'a','lwiki-comment-anchor');
+        for(var j=0,m=anchors.length;j<m;j++){
+          var anchor=parseInt(agh.dom.getInnerText(anchors[j]));
+          if(!isNaN(anchor)&&0<anchor&&anchor<commentIndex){
+            var aroot=index2info[anchor].rootAnchor;
+            if(cand===null){
+              cand=aroot;
+            }else if(cand!==aroot){
+              return commentIndex;
+            }
+          }
+        }
+
+        if(cand===null)
+          return commentIndex;
+        return cand;
+      })();
+
+      if(rootAnchor!==commentIndex)
+        agh.dom.insert(index2info[rootAnchor].div,div,'end');
+
+      index2info[commentIndex]={div:div,p:p,rootAnchor:rootAnchor};
     }
   }
 
@@ -287,6 +334,6 @@
     lwikiModifyContent(document);
     initialize_preview();
     initialize_comment_preview();
-    initialize_comment_reply();
+    initialize_comment_list();
   });
 })(window,window.agh);

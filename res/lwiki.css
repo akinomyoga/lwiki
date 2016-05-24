@@ -462,8 +462,8 @@ div.lwiki-menu-holder>h1{padding:3px;}
 
 /* COMMENT */
 h2.comment{}
-div.comment-holder{border:0px solid gray;border-width:1px 0 0 1px;background-color:#eee;}
-p.comment-head{margin:5px 5px 0;}
+div.comment-holder{border:0px solid gray;border-width:1px 0 0 1px;background-color:#eee;padding:5px;}
+p.comment-head{margin:0 0 5px 0;}
 p.comment-head>span.comment-name:before{font-weight:normal;content:"Posted by ";}
 p.comment-head>span.comment-name{font-weight:bold;}
 p.comment-head>span.comment-date:before{content:"(日時 ";}
@@ -471,7 +471,7 @@ p.comment-head>span.comment-date:after{content:")";}
 p.comment-head>span.comment-hash:before{content:"";}
 p.comment-head>button.lwiki-comment-button{padding:0 0.3em;font-size:1em;}
 
-div.comment-body{padding:.5em;}
+div.comment-body{margin:0;padding:.5em;}
 div.comment-body h1,
 div.comment-body h2,
 div.comment-body h3,
@@ -508,6 +508,9 @@ p.comment-head:before{
 p.comment-head[data-comment-number]:before{
   counter-reset:comment-head attr(data-comment-number);
   content:attr(data-comment-number) ". ";}
+
+div.comment-holder>div.comment-holder{
+  border-width:1px 0 0 0;margin:0 .5em 0 2em;background-color:white;}
 
 @media print{div#comment-form{display:none!important;}}
 div.securimage-captcha{display:inline-block;margin:0;width:132px;height:66px;}
