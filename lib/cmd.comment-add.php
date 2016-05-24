@@ -35,7 +35,7 @@ function comment_generate_html($ipaddr,$date,$name,$body,$count){
   $html_body=\lwiki\convert\convert($body);
   $html_body=preg_replace('/(^|<br\/><br\/>)(<br\/>)+/','$1',$html_body);
   $html_body='<div class="comment-body">'.$html_body.'</div>';
-  $html_holder='<div class="comment-holder" id="lwiki-comment-'.$count.'">'.$html_head.PHP_EOL.$html_body.'</div>';
+  $html_holder='<div class="comment-holder" id="lwiki-comment-'.$count.'" data-comment-source="'.htmlspecialchars($body).'">'.$html_head.PHP_EOL.$html_body.'</div>';
   return $html_holder.PHP_EOL;
 }
 

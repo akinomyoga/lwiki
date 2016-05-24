@@ -469,6 +469,7 @@ p.comment-head>span.comment-name{font-weight:bold;}
 p.comment-head>span.comment-date:before{content:"(日時 ";}
 p.comment-head>span.comment-date:after{content:")";}
 p.comment-head>span.comment-hash:before{content:"";}
+p.comment-head>button.lwiki-comment-button{padding:0 0.3em;font-size:1em;}
 
 div.comment-body{padding:.5em;}
 div.comment-body h1,

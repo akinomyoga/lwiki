@@ -1,4 +1,4 @@
-(function(global){
+(function(global,agh){
   var lwiki_empty_time=-1;
   function lwiki_benchmark(func,elemResult){
     if(lwiki_empty_time<0){
@@ -196,10 +196,10 @@
   }
 
   function initialize_comment_preview(){
-    var div=document.getElementById("comment-form");
-    if(!div)return;
-    var form=div.getElementsByTagName("form")[0];
+    var div=window.lwiki.commentFormDiv;
+    var form=window.lwiki.commentForm;
     if(!form)return;
+
     if(form.m_lwikiPreviewInitialized)return;
     form.m_lwikiPreviewInitialized=true;
 
@@ -233,11 +233,60 @@
     agh.dom.insert(inPost,btnPrev,'before');
   }
 
+  function initialize_comment_reply(){
+    var lwiki=window.lwiki;
+    if(!lwiki.commentForm)return;
+    var inTxt=lwiki.commentForm.elements["body"];
+
+    console.log("hello");
+    lwiki.commentInsertAnchor=function(commentIndex){
+      inTxt.value='>>'+commentIndex+'\n'+inTxt.value.replace(/^>>\d+\s*\n?/,"");
+    };
+    lwiki.commentSource=[];
+    lwiki.commentInsertQuotes=function(commentIndex){
+      var source=lwiki.commentSource[commentIndex];
+      if(source){
+        inTxt.value=inTxt.value.replace(/(.)\n?$/,'$1\n\n')+source.replace(/^|\n(?!$)/g,'$&> ');
+      }
+    };
+
+    var divs=document.getElementsByTagName("div");
+    for(var i=0,n=divs.length;i<n;i++){
+      var div=divs[i];
+      if(div.className!=='comment-holder')continue;
+      var p=div.childNodes[0];
+      var commentIndex=parseInt(p.getAttribute('data-comment-number'));
+
+      // [返信] ボタン
+      var reply='lwiki.commentInsertAnchor('+commentIndex+');';
+      var html=' <button class="lwiki-comment-button" onclick="'+reply+'">返信</button>';
+
+      // [引用] ボタン
+      var source=div.getAttribute('data-comment-source');
+      if(source){
+        lwiki.commentSource[commentIndex]=source;
+        var quote='lwiki.commentInsertQuotes('+commentIndex+');';
+        html+=' <button class="lwiki-comment-button" onclick="'+quote+'">引用</button>';
+      }
+
+      agh.dom.insert(p,html,'end');
+    }
+  }
+
   //---------------------------------------------------------------------------
 
   agh.scripts.wait(["event:onload","agh.dom.js","agh.text.color.js"],function(){
+    agh.Namespace('lwiki');
+    var div=document.getElementById("comment-form");
+    if(div){
+      window.lwiki.commentFormDiv=div;
+      var form=div.getElementsByTagName("form")[0];
+      if(form)window.lwiki.commentForm=form;
+    }
+
     lwikiModifyContent(document);
     initialize_preview();
     initialize_comment_preview();
+    initialize_comment_reply();
   });
-})(window);
+})(window,window.agh);
