@@ -298,7 +298,7 @@
         var anchors=getElementsByTagNameAndClassName(div,'a','lwiki-comment-anchor');
         for(var j=0,m=anchors.length;j<m;j++){
           var anchor=parseInt(agh.dom.getInnerText(anchors[j]));
-          if(!isNaN(anchor)&&0<anchor&&anchor<commentIndex){
+          if(!isNaN(anchor)&&0<anchor&&anchor<commentIndex&&anchor in index2info){
             var aroot=index2info[anchor].rootAnchor;
             if(cand===null){
               cand=aroot;

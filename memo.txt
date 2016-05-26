@@ -15,6 +15,60 @@ Apache RewriteRule に関して
 
   対称な decode/encode が実行される為には RewriteRule に [B] flag を指定する必要がある。
 
+  と思ったら上記の様にすると今度はまた別の問題が生じる。
+  初めの urldecode の時に '+' → ' ' が実行されない。うーん。
+  表にまとめると以下の様になる。
+
+  urldecode     | urlencode  | urlencode with B flag
+  '+'   → '+'  | '+' → '+' | '+' → '%2B'
+  '%2B' → '+'  |
+
+  [[apache 2.2 - How do you prevent mod_rewrite from decoding a string in the path? - Server Fault>http://serverfault.com/questions/683107/how-do-you-prevent-mod-rewrite-from-decoding-a-string-in-the-path]]
+  の回答によると RFC 3986 で定められているのだという。どういうことか。Apache 専用の RFC があるわけないし、mod_rewrite が RFC になっているとも思われない。
+  と思ってリンク先を見たら RFC 3986 は URI であり、URI の同一性について規定されている。標準形を定める為に様々な正規化が説明されている。特に、
+
+  6.2.2.2 Percent-Encoding Normalization
+
+  The percent-encoding mechanism (Section 2.1) is a frequent source of
+  variance among otherwise identical URIs.  In addition to the case
+  normalization issue noted above, some URI producers percent-encode
+  octets that do not require percent-encoding, resulting in URIs that
+  are equivalent to their non-encoded counterparts.  These URIs should
+  be normalized by decoding any percent-encoded octet that corresponds
+  to an unreserved character, as described in Section 2.3.
+
+  うーん。よくわからない。そもそも URI の設計が誤っていて、空白と + の区別がつかなくなるような事態になっているということなのだろうか。
+  だとすると受け取ったデータを見て勝手に %2B と + を区別しようと考えること自体が URI 的に誤っているという事なのだろうか。
+  と思って色々観察してみるが、どうも、そもそも ' ' を + にしろという話は何処にも書かれていない様に見える。
+  というか寧ろ '%20' というサンプルが提示されている。一体どういうことか。
+
+  PHP が勝手に '+' を ' ' にしてしまうのがいけないということなのだろうか。
+  と思って PHP で decode space plus とか検索したら PHP のリファレンスが当たった。
+  どうも urldecode/urlencode という関数の他に rawurlencode/rawurldecode というのがあって、
+  後者の対の方が RFC 3986 に従っているらしい。
+  さて、問題は何かというと PHP_SELF や _GET 変数の中に格納されている値が、
+  既に RFC 違反の urldecode を実行してしまっているという事にある。
+
+  +-- 解決方法は1つ -------------------------------------+
+  |                                                      |
+  | 1 PHP で urlencode する時は urlencode                |
+  |   ではなくて rawurlencode を使うべき。               |
+  |                                                      |
+  | 2 PHPが勝手に + を空白にしてしまわない様にするために |
+  |   URI の一部を QS に持っていく場合には               |
+  |   mod_rewrite RewriteRule に [B] フラグを指定する。  |
+  |                                                      |
+  +------------------------------------------------------+
+
+  もう少し調べてみると urlencode/urldecode というのは
+  form-encoding という方式 (application/x-www-form-urlencoded) に従っている様だ。
+
+  また、やはり urlencode ではなくて rawurlencode を使う事が推奨されている様だ。
+  [[php - urlencode vs rawurlencode? - Stack Overflow>http://stackoverflow.com/questions/996139/urlencode-vs-rawurlencode]]
+
+  うーん。或いは、URI の部分は RFC 3986 で encode するけれど、
+  Query String の部分は application/x-www-form-urlencoded にしなければならないという事なのだろうか。
+
 * RewriteRule は既定では %2F を含む URL を書き換えてくれない
 
   http://stackoverflow.com/questions/7544759/cannot-match-2f-in-mod-rewrite
@@ -58,6 +112,37 @@ Apache RewriteRule に関して
 -------------------------------------------------------------------------------
   ToDo
 -------------------------------------------------------------------------------
+
+2016-05-27
+
+* Apache mod_rewrite で ' ' と '+' の区別が付かなくなる問題
+
+  % 問題のある urlencode/urldecode から
+  % rawurlencode/rawurldecode に移行したい。
+
+  しかし既に生成してしまったページをどうするのかが問題である。
+  特に記録されているデータを全て手動で encode し直すのは大変である。
+  一応 .lwiki/data に version を導入してその version を見て判断し、
+  必要があれば update を行うという仕組みにすれば不可能ではない。
+  しかし実装が面倒だし変換に失敗すると余計に面倒なことになる。
+
+  実のところ、今 urlencode が問題になっているのはページ名だけである。
+  つまり、リンクの生成とリンクを受け取った時の解釈の部分だけでも
+  urlencode/urldecode にしてしまえば良いのである。
+  特にリンク生成時に rawurlencode を使えば良いだけなのではないかという気がする。
+  という訳で影響範囲について調べることにする。
+  実のところ、最近の書き換えによってリンク生成部分は一箇所にまとめられているので結構変更は楽である。
+
+  % 本当のところは初めから全て rawurlencode を使って設計するべきだったのである。
+  % これは次に major update があるとしたら、その時に対応するべき事だろう。
+
+  事情はもっと複雑の様である。事実上
+  1. URI 本体の部分は RFC 3986 に従って encode する
+  2. Query string の部分は www-form-urlencoded で encode する
+  という事になっている様である。とすれば両方を切り替えられる様に実装するべきであり、
+  結局、現状の様に www-form-urlencoded ベースで必要な時に RFC 3986 にするか、
+  その逆にするかという事をするしかない。
+  普段は www-form-urlencoded にする方が自然な気もする。
 
 2016-05-23
 

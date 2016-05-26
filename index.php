@@ -97,8 +97,13 @@ function lwiki_link_page($pageid=null,$get=null){
     global $lwiki_base_baseDirectoryUrl;
     $url=$lwiki_base_baseDirectoryUrl.'/';
     if($pageid!==null){
-      # Apache - AllowEncodedSlashes Off 対策で %2F は / に変換する。
-      $url.=str_replace('%2F','/',$pageid);
+      # 1. Apache - AllowEncodedSlashes Off 対策で %2F は / に変換する。
+      $pageid=str_replace('%2F','/',$pageid);
+      # 2. query string にする時は urlencode (' ' → '+') で良いが、
+      #   URI の一部にするときは RFC 3986 (' ' → '%20') にしないと駄目。
+      #   特に Apache の mod_rewrite で実行される "URI正規化" で '+' と ' ' が衝突する。
+      $pageid=str_replace('+','%20',$pageid);
+      $url.=$pageid;
     }
   }else{
     global $lwiki_base_php;
