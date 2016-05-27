@@ -61,12 +61,32 @@ function find_section_range($line,$content,&$i0,&$iN){
   return $i0<$iN;
 }
 
+// 編集衝突チェック用
+//
+//   署名と一緒にすると失敗時に原因を特定できないので、敢えてユーザ情報を含めない。
+//   つまり、既に他のユーザによって編集されてしまったことによる失敗か、
+//   ユーザ専用の署名がされていないフォームによる投稿 (攻撃) かを区別したい。
+//
+function _calculate_edithash($content){
+  return lwiki_hash($content,'17e3ae721e64dbba');
+}
+// 編集フォーム署名用
+//
+//   編集衝突を意図的にスキップされない様に edithash にチェーンする。
+//
+function _calculate_xsrfhash($edithash){
+  global $lwiki_config_fingerPrint;
+  global $lwiki_global_userIdentifier;
+  return lwiki_hash($edithash.':'.$lwiki_global_userIdentifier,$lwiki_config_fingerPrint.':wgSzOglkPfKqmAion');
+}
+
 class edit_session_data{
   private $pageid;
   private $partmark;
 
   private $content;
   private $edithash;
+  private $xsrfhash;
   private $partlength;
   private $initialized=false;
 
@@ -91,7 +111,8 @@ class edit_session_data{
       $this->partlength=$iN-$i0;
       $this->content=substr($this->content,$i0,$this->partlength);
     }
-    $this->edithash=lwiki_hash($this->content,'17e3ae721e64dbba');
+    $this->edithash=_calculate_edithash($this->content);
+    $this->xsrfhash=_calculate_xsrfhash($this->edithash);
   }
 
   private function initialize(){
@@ -99,6 +120,7 @@ class edit_session_data{
     $this->initialized=true;
     $this->content=lwiki_canonicalize_linebreaks($_POST['content']);
     $this->edithash=$_POST['edithash'];
+    $this->xsrfhash=$_POST['sigma'];
     $this->partlength=@$_POST['partlength'];
 
     if(!$this->edithash)
@@ -112,6 +134,10 @@ class edit_session_data{
   public function edithash(){
     $this->initialize();
     return $this->edithash;
+  }
+  public function xsrfhash(){
+    $this->initialize();
+    return $this->xsrfhash;
   }
   public function partlength(){
     $this->initialize();
@@ -211,6 +237,7 @@ class page_update_proc{
     global $edit_session;
     $content=$edit_session->content();
     $edithash=$edit_session->edithash();
+    $xsrfhash=$edit_session->xsrfhash();
 
     if(lwiki_auth_check($msg)!=0){
       error($msg);
@@ -241,8 +268,15 @@ class page_update_proc{
       }
 
       // check 編集の衝突
-      if($edithash!=lwiki_hash($original_wiki_body,'17e3ae721e64dbba')){
+      if($edithash!=_calculate_edithash($original_wiki_body)){
         error('編集の衝突が発生しました (別のユーザによる更新が編集中に行われました)。差分を参照して下さい。{'.$i0.','.$iN.'}');
+        $flock->unlock($fname_wiki);
+        return false;
+      }
+
+      // XSRF 識別
+      if($xsrfhash!=_calculate_xsrfhash($edithash)){
+        error('内部署名が一致しません。この投稿が意図したものか確認し、再度投稿を行って下さい。');
         $flock->unlock($fname_wiki);
         return false;
       }

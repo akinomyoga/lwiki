@@ -1,9 +1,18 @@
 <?php // -*- mode:php -*-
 
-// require variable $comment_id
+namespace lwiki\comment;
 
 include_once "lib.flock.php";
 include_once "lib.lwiki.php";
+
+// require variable $comment_id
+
+// コメント用のフォーム署名
+function _calculate_xsrfhash(){
+  global $lwiki_config_fingerPrint;
+  global $lwiki_global_userIdentifier;
+  return lwiki_hash($lwiki_global_userIdentifier,$lwiki_config_fingerPrint.':XvJiDXWkQXzoQ');
+}
 
 $comment_error="";
 function comment_echoe($html){
@@ -14,6 +23,31 @@ function comment_echoe($html){
 // 何れのデータ(.dat/.htm/.last)の書き換え中も $fdat をロックする事にする。
 $fdat="./.lwiki/data/$comment_id.dat";
 $fhtm="./.lwiki/data/$comment_id.htm";
+
+function output_comment_form(){
+  global $pageid;
+  global $comment_name;
+  global $comment_body;
+  global $comment_action;
+  global $comment_error;
+
+  $html_captcha=lwiki_auth_generate();
+  $action=$comment_action;
+  if($action=='')$action=lwiki_link_page($pageid);
+
+  echo '<div id="comment-form" style="width:400px;text-ailgn:center;border:1px solid gray;padding:10px 20px;">';
+  if($comment_error!='')echo '  '.$comment_error;
+  echo '  <form method="post" action="'.htmlspecialchars($action).'">';
+  echo '    <input type="hidden" name="type" value="comment_add" />';
+  echo '    <input type="hidden" name="sigma" value="'.htmlspecialchars(_calculate_xsrfhash()).'" />';
+  echo '    <p style="margin:0.5em 0;">名前: <input type="text" name="name" size="20" value="'.htmlspecialchars($comment_name).'"/></p>';
+  echo '    <textarea name="body" rows="5" style="width:390px;padding:5px;">'.htmlspecialchars($comment_body).'</textarea>';
+  echo '    <div style="text-align:center;margin:0.5em;">';
+  echo '      '.$html_captcha.'<input type="submit" name="comment_post" value="投稿" />';
+  echo '    </div>';
+  echo '  </form>';
+  echo '</div>';
+}
 
 function comment_generate_html($ipaddr,$date,$name,$body,$count){
   // ID
@@ -47,6 +81,7 @@ function comment_add(){
 
   $name=$_POST['name'];
   $body=$_POST['body'];
+  $xsrf=$_POST['sigma'];
   if($name==''){
     comment_echoe('名前が空です。');
     return false;
@@ -61,6 +96,9 @@ function comment_add(){
     return false;
   }else if(mb_strlen($body)>5000){
     comment_echoe('コメント内容が長すぎです。分割して投稿して下さい。');
+    return false;
+  }else if($xsrf!==_calculate_xsrfhash()){
+    comment_echoe('フォーム署名が不正です。意図した投稿か確認し再度投稿を試みて下さい。');
     return false;
   }
 

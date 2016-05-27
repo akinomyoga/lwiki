@@ -44,7 +44,8 @@
     }
 
     $comment_action=lwiki_link_page($pageid).'#comment-form';
-    include ".lwiki/lib/stub.comment-form.php";
+    require_once ".lwiki/lib/mod_comment.php";
+    \lwiki\comment\output_comment_form();
   }
 ?>
 </div>

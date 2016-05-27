@@ -62,6 +62,14 @@ function lwiki_auth_securimage_generate(){
 }
 
 //---------------------------------------------------------------------------
+// common global variables
+
+$lwiki_global_userIdentifier=$_SERVER['REMOTE_ADDR'].':'.$_SERVER['HTTP_USER_AGENT'];
+$lwiki_base_php=$_SERVER['SCRIPT_NAME'];
+$lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$lwiki_base_php);
+$lwiki_base_resourceDirectoryUrl=$lwiki_base_baseDirectoryUrl.'/res';
+
+//---------------------------------------------------------------------------
 // config
 
 $lwiki_config_rewrite=false;
@@ -85,11 +93,11 @@ EOS;
 
 require_once 'lwiki_config.php';
 
+$comment_authcode=lwiki_hash($lwiki_global_userIdentifier,$lwiki_config_fingerPrint);
+$comment_authcode_cookie=@$_COOKIE['comment-authcode'];
+
 //---------------------------------------------------------------------------
 
-$lwiki_base_php=$_SERVER['SCRIPT_NAME'];
-$lwiki_base_baseDirectoryUrl=preg_replace('/\/index\.php$/','',$lwiki_base_php);
-$lwiki_base_resourceDirectoryUrl=$lwiki_base_baseDirectoryUrl.'/res';
 
 function lwiki_link_page($pageid=null,$get=null){
   global $lwiki_config_rewrite;
@@ -201,8 +209,8 @@ default:
   }
 
   if(@$_GET['command']=='comment-regenerate'){
-    require_once ".lwiki/lib/cmd.comment-add.php";
-    comment_regenerate();
+    require_once ".lwiki/lib/mod_comment.php";
+    \lwiki\comment\comment_regenerate();
   }else if(@$_GET['command']=='page-convert'){
     require_once ".lwiki/lib/lib.page-edit.php";
     \lwiki\edit\page_convert();
@@ -212,8 +220,8 @@ default:
   $comment_name=@$_COOKIE['comment-name'];
   $comment_body="";
   if(@$_POST['type']=='comment_add'){
-    require_once ".lwiki/lib/cmd.comment-add.php";
-    $comment_added=comment_add();
+    require_once ".lwiki/lib/mod_comment.php";
+    $comment_added=\lwiki\comment\comment_add();
     if($comment_added){
       $comment_name=$_POST['name'];
       setcookie('comment-name',$comment_name);

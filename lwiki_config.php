@@ -1,8 +1,19 @@
 <?php // -*- mode:php -*-
 
+#
+# $lwiki_config_fingerPrint
+#
+#   この変数の値は各 wiki サイト毎に乱数によって決定します。
+#   この値は他人に知られてはなりません。この値を用いると、、
+#   任意に認証をスキップしたり XSRF 攻撃を行ったりすることが可能になります。
+#
+#   この値を変更すると一旦全ての session が切れます。
+#   また、IP に紐付けられた ID が変化します。
+#   それ以外に特に問題は生じません。
+#
+$lwiki_config_fingerPrint='%authhash%';
+
 // 認証(コメント用)
-$comment_authcode=lwiki_hash($_SERVER['REMOTE_ADDR'].':'.$_SERVER['HTTP_USER_AGENT'],'%authhash%');
-$comment_authcode_cookie=@$_COOKIE['comment-authcode'];
 
 function lwiki_auth_check(&$errorMessage){
   global $comment_authcode,$comment_authcode_cookie;
