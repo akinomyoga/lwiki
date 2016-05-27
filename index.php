@@ -102,7 +102,9 @@ function lwiki_link_page($pageid=null,$get=null){
       # 2. query string にする時は urlencode (' ' → '+') で良いが、
       #   URI の一部にするときは RFC 3986 (' ' → '%20') にしないと駄目。
       #   特に Apache の mod_rewrite で実行される "URI正規化" で '+' と ' ' が衝突する。
+      #   また RFC 3986 では + → %2B にする必要もない。
       $pageid=str_replace('+','%20',$pageid);
+      $pageid=str_replace('%2B','+',$pageid);
       $url.=$pageid;
     }
   }else{
