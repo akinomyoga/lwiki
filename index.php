@@ -91,7 +91,7 @@ function lwiki_datetime($utime){
 $lwiki_config_commonHeadContent=<<<EOS
 EOS;
 
-require_once 'lwiki_config.php';
+include_once './lwiki_config.php';
 
 $comment_authcode=lwiki_hash($lwiki_global_userIdentifier,$lwiki_config_fingerPrint);
 $comment_authcode_cookie=@$_COOKIE['comment-authcode'];
