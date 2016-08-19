@@ -218,7 +218,7 @@ pre.lwiki-implicit-title{
 div.lwiki-explicit-title,
 pre.lwiki-implicit-title:before{
   display:block;padding:0px 3px;margin:0px;margin-bottom:.5ex;
-  background-color:gray;color:white;font-family:monospace;font-size:small;}
+  background-color:gray;color:white;font-family:monospace,serif;font-size:small;}
 
 pre.lwiki-implicit-title:before{content:"<No Title>";}
 pre.lwiki-implicit-title[data-lwiki-title]:before{content:attr(data-lwiki-title);}
@@ -230,18 +230,18 @@ pre.lwiki-explicit-title{
   margin-top:0;border-top:1px;
   border-width:0px 0px 1px 0px;}
 
-code{font-family:monospace;}
+code{font-family:monospace,serif;}
 @media print{
-  code{font-family:lwiki_font_code,monospace;}
+  code{font-family:lwiki_font_code,monospace,serif;}
 }
 
 kbd.lwiki-keyspec{
   padding:1px 0.5ex;border:1px outset white;background-color:#ddd;
   display:inline-block;text-indent:0;line-height:1em;
-  font-weight:normal;font-family:monospace;
+  font-weight:normal;font-family:monospace,serif;
   text-shadow:1px 1px 0 white}
 @media print{
-  kbd.lwiki-keyspec{font-family:lwiki_font_code,monospace;}
+  kbd.lwiki-keyspec{font-family:lwiki_font_code,monospace,serif;}
 }
 
 /*---- WIKI UI --------------------------------------------------------------*/
