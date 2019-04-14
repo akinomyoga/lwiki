@@ -75,7 +75,7 @@ $lwiki_base_resourceDirectoryUrl=$lwiki_base_baseDirectoryUrl.'/res';
 $lwiki_config_rewrite=false;
 
 $lwiki_config_timezone=new DateTimeZone('Asia/Tokyo');
-function lwiki_datetime($utime){
+function lwiki_datetime($utime = null){
   // http://qiita.com/Popphron/items/19c5bc6646db99bd3acb
   // - new DateTime() を使用しようとすると timezone が php.ini で指定されていない場合にエラーになる。
   // - '@' 形式で初期化すると $lwiki_config_timezone は使用されない。
