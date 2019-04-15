@@ -49,13 +49,12 @@ class lwiki_hist{
       }
 
       // skip
-      $a1=$m[1]-1;
+      $a1 = (int) $m[1] - 1;
       while($iline<$a1)
         array_push($file2,$file[$iline++]);
 
       if($m[3]==='d'){
         // $m[1],$m[2]d
-        $a2=$m[2]-1;
         $a2=$a1;
         if($m[2]!=='')$a2=$m[2]-1;
         $iline=$a2+1;
