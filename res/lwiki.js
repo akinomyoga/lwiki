@@ -82,24 +82,57 @@
     e_line.appendChild(btnShow);
   }
 
-  function initialize_toggle(div,closed){
+  function initialize_toggle(div, closed) {
+    if (div.initialize_toggle_processed) return;
+    div.initialize_toggle_processed = true;
 
+    var e_container = div.ownerDocument.createElement('div');
+    var arr = agh(div.childNodes);
+    for (var i = 0; i < arr.length; i++)
+      e_container.appendChild(arr[i]);
+
+    var e_title = div.ownerDocument.createElement('span');
+    div.appendChild(e_title);
+    div.appendChild(e_container);
+    e_title.style.cursor = 'pointer';
+    e_title.style.textDecoration = 'underline';
+    e_title.style.userSelect = 'none';
+
+    var title = 'Details';
+    var lwiki_title = div.dataset.lwikiTitle;
+    if (lwiki_title != null && lwiki_title != '')
+      title = lwiki_title;
+
+    function update_state() {
+      if (closed) {
+        e_container.style.display = 'none';
+        e_title.innerHTML = '▶ ' + title;
+      } else {
+        e_container.style.display = 'block';
+        e_title.innerHTML = '▼ ' + title;
+      }
+    }
+    agh.addEventListener(e_title, 'click', function() {
+      closed = !closed;
+      update_state();
+    });
+    update_state();
   }
 
-  function initialize_color(target){
+  function initialize_color(target) {
     var m;
-    if(!(m=(target.className||"").match(/(?:^|\s)lwiki-language-([^\s]+)(?:\s|$)/)))return;
-    var language=m[1];
+    if (!(m = (target.className || "").match(/(?:^|\s)lwiki-language-([^\s]+)(?:\s|$)/))) return;
+    var language = m[1];
 
-    var content=target.innerHTML;
-    var langs=language.split('/');
-    for(var j=0;j<langs.length;j++){
+    var content = target.innerHTML;
+    var langs = language.split('/');
+    for (var j = 0; j < langs.length; j++) {
       var lang = langs[j];
-      if(lang == 'iline') lang = '.iline';
-      if(agh.Text.Color[lang] instanceof Function)
-        content=agh.Text.Color(content,lang,"/html");
+      if (lang == 'iline') lang = '.iline';
+      if (agh.Text.Color[lang] instanceof Function)
+        content = agh.Text.Color(content, lang, "/html");
     }
-    target.innerHTML=content;
+    target.innerHTML = content;
   }
 
   function lwikiModifyContent(target){

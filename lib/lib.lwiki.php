@@ -1166,61 +1166,64 @@ lwiki_language::$defaultInstance->register_pattern(
       //   $isblock   = false ! 末尾の改行を削除するか?
 
       // (...) → $className: class 属性を読み取り
-      $isTitled=false;
-      $language='';
-      $langdesc='';
-      $contentHead='';
-      $attributes='';
-      $className='';
-      $styles='';
-      if(($args=lwc_read_args($content,$i))){
-        for($j=0,$jN=count($args);$j<$jN;$j++){
-          $a=trim($args[$j]);
+      $isTitled = false;
+      $language = '';
+      $langdesc = '';
+      $contentHead = '';
+      $attributes = '';
+      $className = '';
+      $styles = '';
+      if (($args = lwc_read_args($content,$i))) {
+        for ($j = 0, $jN = count($args); $j < $jN; $j++) {
+          $a = trim($args[$j]);
 
           // attribute=value
-          if(preg_match('/^([\w_-]+)=(.*)$/u',$a,$m)){
-            $prop=$m[1];
-            $value=$m[2];
-            if($name=='pre'){
-              if($prop==='title'){
-                if($value){
-                  $contentHead.='<div class="lwiki-explicit-title">'.htmlspecialchars($value).'</div>';
-                  $className.=' lwiki-explicit-title';
+          if (preg_match('/^([\w_-]+)=(.*)$/u', $a, $m)) {
+            $prop = $m[1];
+            $value = $m[2];
+            if ($name == 'pre') {
+              if ($prop === 'title') {
+                if ($value) {
+                  $contentHead .= '<div class="lwiki-explicit-title">'.htmlspecialchars($value).'</div>';
+                  $className .= ' lwiki-explicit-title';
                 }
-                $isTitled=true;
+                $isTitled = true;
               }
-            }else if($name==='div'){
-              if($prop==='color'){
-                $colors=explode(':',$value);
-                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[0]))
-                  $styles.='color:'.$colors[0].';';
-                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[1]))
-                  $styles.='background-color:'.$colors[1].';';
-                if(preg_match('/^'.lwc_util::$rex_cssColor.'$/u',$colors[2]))
-                  $styles.='border:1px solid '.$colors[2].';';
-              }else if($prop==='padding'){
-                if(preg_match('/^\s*'.lwc_util::$rex_cssLength.'(?:\s+'.lwc_util::$rex_cssLength.')*\s*$/u',$value))
-                  $styles.='padding:'.$value.';';
+            } else if ($name === 'div') {
+              if ($prop === 'color') {
+                $colors = explode(':',$value);
+                if (preg_match('/^'.lwc_util::$rex_cssColor.'$/u', $colors[0]))
+                  $styles .= 'color:'.$colors[0].';';
+                if (preg_match('/^'.lwc_util::$rex_cssColor.'$/u', $colors[1]))
+                  $styles .= 'background-color:'.$colors[1].';';
+                if (preg_match('/^'.lwc_util::$rex_cssColor.'$/u', $colors[2]))
+                  $styles .= 'border:1px solid '.$colors[2].';';
+              } else if ($prop === 'padding') {
+                if (preg_match('/^\s*'.lwc_util::$rex_cssLength.'(?:\s+'.lwc_util::$rex_cssLength.')*\s*$/u', $value))
+                  $styles .= 'padding:'.$value.';';
+              } else if ($prop === 'title') {
+                $isTitled = true;
+                $attributes .= ' data-lwiki-title="'.htmlspecialchars($value).'"';
               }
             }
             continue;
           }
 
           // !language if &pre,&code
-          if(preg_match('/^![-_\w\/]+$/u',$a)){
-            if($name==='pre'||$name==='code'){
-              $lang=substr($a,1);
-              $desc=$conv->language()->codeTitles[preg_replace('/.*\//u','',$lang)];
-              if(!$desc)$desc=$lang;
+          if (preg_match('/^![-_\w\/]+$/u', $a)) {
+            if ($name === 'pre' || $name === 'code') {
+              $lang = substr($a, 1);
+              $desc = $conv->language()->codeTitles[preg_replace('/.*\//u', '', $lang)];
+              if (!$desc) $desc = $lang;
 
-              $language=$language?$language.'/'.$lang:$lang;
-              $langdesc=$langdesc?$langdesc.' '.$desc:$desc;
+              $language = $language ? $language.'/'.$lang : $lang;
+              $langdesc = $langdesc ? $langdesc.' '.$desc : $desc;
               continue;
             }
           }
 
-          if(preg_match('/^[-_\w\s]+$/u',$a))
-            $className.=' '.$a;
+          if (preg_match('/^[-_\w\s]+$/u', $a))
+            $className .= ' '.$a;
         }
       }
 
